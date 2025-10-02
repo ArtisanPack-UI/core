@@ -2,9 +2,16 @@
 
 namespace Tests;
 
+use ArtisanPackUI\Core\CoreServiceProvider;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Orchestra\Testbench\TestCase as Orchestra;
 
-abstract class TestCase extends BaseTestCase
+class TestCase extends Orchestra
 {
-    //
+	protected function getPackageProviders( $app )
+	{
+		return [
+			CoreServiceProvider::class,
+		];
+	}
 }
