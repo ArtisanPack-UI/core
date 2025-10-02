@@ -1,7 +1,5 @@
 <?php
 
-it( 'returns a successful response', function () {
-	$status = true;
-
-	$this->assertTrue( $status );
+test( 'that true is true', function () {
+	expect( true )->toBeTrue();
 } );
