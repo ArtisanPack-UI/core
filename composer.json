@@ -2,7 +2,7 @@
   "name": "artisanpack-ui/core",
   "description": "Supplies the core functionality for ArtisanPack UI that needs to be shared across all packages.",
   "type": "library",
-  "license": "GPL-3.0-or-later",
+  "license": "MIT",
   "version": "1.0.0",
   "autoload": {
     "psr-4": {
