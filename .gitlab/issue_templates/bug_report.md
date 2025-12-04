@@ -1,42 +1,54 @@
-<!--- Provide a general summary of the issue in the Title above -->
+<!--- Provide a clear, concise title above that describes the bug -->
+
+/label ~"Type::Bug" ~"Status::Backlog"
 
 ## Expected Behavior
 
-<!--- Tell us what should happen -->
+<!--- What should happen? -->
 
 ## Current Behavior
 
-<!--- Tell us what happens instead of the expected behavior -->
-
-## Possible Solution
-
-<!--- Not obligatory, but suggest a fix/reason for the bug, -->
+<!--- What actually happens? Include error messages if applicable -->
 
 ## Steps to Reproduce
 
-<!--- Provide a link to a live example, or an unambiguous set of steps to -->
-<!--- reproduce this bug. Include code to reproduce, if relevant -->
+<!--- Provide detailed steps to reproduce the bug -->
 
-1.
-2.
-3.
-4.
+1. 
+2. 
+3. 
+4. 
 
-## Context (Environment)
+## Environment
 
-<!--- How has this issue affected you? What are you trying to accomplish? -->
-<!--- Providing context helps us come up with a solution that is most useful in the real world -->
+- **Operating System:** 
+- **Browser:** 
+- **PHP Version:** 
+- **Project Version:** 
 
-<!--- Provide a general summary of the issue in the Title above -->
-Operating System:  
-Browser:  
-PHP Version:  
-Digital Shopfront CMS Version:
+## Possible Solution
 
-## Detailed Description
+<!--- Optional: Suggest a fix or cause of the bug -->
 
-<!--- Provide a detailed description of the change or addition you are proposing -->
+## Additional Context
 
-## Possible Implementation
+<!--- Screenshots, error logs, related issues, etc. -->
 
-<!--- Not obligatory, but suggest an idea for implementing addition or change -->
+---
+
+### Before Submitting
+
+Please ensure this issue has the following labels applied:
+
+- [ ] `Type::Bug` (automatically applied)
+- [ ] `Status::Backlog` (automatically applied)
+- [ ] `Priority::*` (add if urgent: Critical, High, Medium, or Low)
+- [ ] `Area::*` (add relevant area: Frontend, Backend, etc.)
+
+**Quick Actions Available:**
+```
+/label ~"Priority::Critical"    # For production blockers
+/label ~"Priority::High"        # For important bugs
+/label ~"Area::Frontend"        # If UI/client-side bug
+/label ~"Area::Backend"         # If server/API bug
+```
