@@ -1,71 +1,32 @@
 <?php
+/**
+ * ArtisanPack UI Core Helper Functions.
+ *
+ * Provides global helper functions for core functionality.
+ * These functions are independent and do not require other ArtisanPack UI packages.
+ *
+ * Note: Accessibility-related helpers (a11y, a11yCSSVarBlackOrWhite, a11yGetContrastColor,
+ * a11yCheckContrastColor, generateAccessibleTextColor) are provided by the
+ * artisanpack-ui/accessibility package. Install that package if you need those functions.
+ *
+ * @since   1.0.0
+ * @package ArtisanPackUI\Core
+ */
 
-use ArtisanPackUI\Core\A11y;
-
-if ( !function_exists( 'a11y' ) ) {
+if ( ! function_exists( 'getToastDuration' ) ) {
 	/**
-	 * Get the Eventy instance.
+	 * Gets the configured duration for toast notifications.
 	 *
-	 * @return A11y
-	 */
-	function a11y()
-	{
-		return app( 'a11y' );
-	}
-}
-
-if ( !function_exists( 'a11yCSSVarBlackOrWhite' ) ) {
-	/**
-	 * Returns whether a text color should be black or white based on the background color.
+	 * Returns the number of seconds that toast notifications should remain
+	 * visible on screen. This can be configured in the application's config
+	 * file at 'artisanpack.core.toast_duration'.
 	 *
-	 * @param string $hexColor The hex code for the background color.
-	 * @return string
 	 * @since 1.0.0
-	 */
-	function a11yCSSVarBlackOrWhite( string $hexColor ): string
-	{
-		return a11y()->a11yCSSVarBlackOrWhite( $hexColor );
-	}
-}
-
-if ( !function_exists( 'a11yGetContrastColor' ) ) {
-	/**
-	 * Returns whether a text color should be black or white based on the background color.
 	 *
-	 * @param string $hexColor The hex code for the background color.
-	 * @return string
-	 * @since 1.0.0
-	 */
-	function a11yGetContrastColor( string $hexColor ): string
-	{
-		return a11y()->a11yGetContrastColor( $hexColor );
-	}
-}
-
-if ( !function_exists( 'getToastDuration' ) ) {
-	/**
-	 * Gets the user's setting for how long the toast element should stay on the screen.
-	 *
-	 * @return float|int
-	 * @since 1.0.0
+	 * @return float|int The toast duration in seconds. Defaults to 5 seconds.
 	 */
 	function getToastDuration(): float|int
 	{
-		return a11y()->getToastDuration();
-	}
-}
-
-if ( !function_exists( 'a11yCheckContrastColor' ) ) {
-	/**
-	 * Returns whether two given colors have the correct amount of contrast between them.
-	 *
-	 * @param string $firstHexColor  The first color to check.
-	 * @param string $secondHexColor The second color to check.
-	 * @return bool
-	 * @since 1.0.0
-	 */
-	function a11yCheckContrastColor( string $firstHexColor, string $secondHexColor ): bool
-	{
-		return a11y()->a11yCheckContrastColor( $firstHexColor, $secondHexColor );
+		return config( 'artisanpack.core.toast_duration', 5 );
 	}
 }

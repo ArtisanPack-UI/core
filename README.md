@@ -133,7 +133,9 @@ php artisan artisanpack:scaffold-config
 ## Requirements
 
 - PHP ^8.2
-- Laravel ^5.3 (illuminate/support)
+- Laravel ^11.0 (illuminate/support)
+
+> **Note:** Version 1.1 dropped support for Laravel 10.x and earlier. See [UPGRADE.md](UPGRADE.md) for migration instructions if upgrading from 1.0.x.
 
 ## Contributing
 
