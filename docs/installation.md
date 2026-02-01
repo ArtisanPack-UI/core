@@ -153,8 +153,8 @@ If you encounter issues during installation:
 
 After successful installation:
 
-1. [Configuration Guide](configuration.md) - Learn how to configure the package
-2. [Usage Examples](usage-examples.md) - See practical usage examples
+1. [Configuration Guide](Configuration) - Learn how to configure the package
+2. [Usage Examples](Usage-Examples) - See practical usage examples
 3. Install additional ArtisanPack UI packages to see the unified configuration system in action
 
 ## Uninstallation

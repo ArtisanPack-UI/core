@@ -471,6 +471,6 @@ class ArtisanPackConfigTest extends TestCase
 
 Now that you've seen practical examples of using ArtisanPack UI Core:
 
-- [Configuration Guide](configuration.md) - Learn more about advanced configuration options
-- [Installation Guide](installation.md) - Review installation and setup procedures
-- [Overview](overview.md) - Understand the package architecture and ecosystem
+- [Configuration Guide](Configuration) - Learn more about advanced configuration options
+- [Installation Guide](Installation) - Review installation and setup procedures
+- [Overview](Overview) - Understand the package architecture and ecosystem

@@ -328,5 +328,5 @@ return [
 
 ## Next Steps
 
-- [Usage Examples](usage-examples.md) - See practical examples of using configurations
-- [Overview](overview.md) - Return to the package overview
+- [Usage Examples](Usage-Examples) - See practical examples of using configurations
+- [Overview](Overview) - Return to the package overview

@@ -59,10 +59,10 @@ To get started with ArtisanPack UI Core:
 4. Use the scaffold command to automatically merge configurations
 5. Customize settings in the unified configuration file
 
-For detailed installation and setup instructions, see the [Installation Guide](installation.md).
+For detailed installation and setup instructions, see the [Installation Guide](Installation).
 
 ## Next Steps
 
-- [Installation Guide](installation.md) - Learn how to install and set up the package
-- [Configuration Guide](configuration.md) - Understand how to configure and customize settings
-- [Usage Examples](usage-examples.md) - See practical examples of using the package
+- [Installation Guide](Installation) - Learn how to install and set up the package
+- [Configuration Guide](Configuration) - Understand how to configure and customize settings
+- [Usage Examples](Usage-Examples) - See practical examples of using the package
