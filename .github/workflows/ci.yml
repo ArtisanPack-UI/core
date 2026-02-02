@@ -66,7 +66,7 @@ jobs:
           path: vendor/
 
       - name: Run tests
-        run: ./vendor/bin/pest --ci
+        run: chmod +x ./vendor/bin/pest && ./vendor/bin/pest --ci
 
   release:
     needs: test
