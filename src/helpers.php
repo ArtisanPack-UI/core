@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ArtisanPack UI Core Helper Functions.
  *
@@ -10,6 +11,7 @@
  * artisanpack-ui/accessibility package. Install that package if you need those functions.
  *
  * @since   1.0.0
+ *
  * @package ArtisanPackUI\Core
  */
 

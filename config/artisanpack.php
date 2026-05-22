@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ArtisanPack UI Unified Configuration.
  *
