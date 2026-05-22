@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<ruleset name="ArtisanPack UI Core">
+    <description>PHP_CodeSniffer configuration for ArtisanPack UI Core</description>
+
+    <!-- Use the ArtisanPackUIStandard coding standard -->
+    <rule ref="ArtisanPackUIStandard"/>
+
+    <!-- Files to check -->
+    <file>src/</file>
+    <file>tests/</file>
+    <file>config/</file>
+
+    <!-- Exclude vendor directory -->
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+
+    <!-- Exclude compiled files and caches -->
+    <exclude-pattern>*/storage/*</exclude-pattern>
+    <exclude-pattern>*/bootstrap/cache/*</exclude-pattern>
+
+    <!-- Exclude node modules if present -->
+    <exclude-pattern>*/node_modules/*</exclude-pattern>
+
+    <!-- Show progress -->
+    <arg name="colors"/>
+    <arg value="p"/>
+
+    <!-- Run checks in parallel for faster execution -->
+    <arg name="parallel" value="4"/>
+
+    <!-- Show sniff codes in all reports -->
+    <arg value="s"/>
+</ruleset>

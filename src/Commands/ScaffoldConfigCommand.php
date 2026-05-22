@@ -1,8 +1,10 @@
 <?php
+
 /**
  * Artisan command to scaffold the unified ArtisanPack UI configuration file.
  *
  * @since      2.0.0
+ *
  * @package    ArtisanPackUI\Core
  */
 
@@ -54,7 +56,7 @@ class ScaffoldConfigCommand extends Command
 
 		// Get the paths to all tagged package configuration files.
 		$packageConfigPaths = ServiceProvider::pathsToPublish(
-			null, 'artisanpack-package-config'
+			null, 'artisanpack-package-config',
 		);
 
 		if ( empty( $packageConfigPaths ) ) {
@@ -98,6 +100,7 @@ class ScaffoldConfigCommand extends Command
 	 *
 	 * @param string $path   The path to the configuration file.
 	 * @param array  $config The configuration array to write.
+	 *
 	 * @return void
 	 */
 	protected function writeConfigFile( string $path, array $config ): void
@@ -106,7 +109,7 @@ class ScaffoldConfigCommand extends Command
 		$export = preg_replace( '/^([ ]*)(.*)/m', '$1$1$2', $export );
 		$array  = preg_split( "/\r\n|\n|\r/", $export );
 		$array  = preg_replace( [ "/\s*array\s\($/", "/\)(,)?$/", "/\s=>\s$/" ], [ null, ']$1', ' => [' ], $array );
-		$export = join( PHP_EOL, array_filter( [ "[" ] + $array ) );
+		$export = join( PHP_EOL, array_filter( [ '[' ] + $array ) );
 		$export = preg_replace( '/=>\s*\[\s*\]/', '=> []', $export );
 
 		$content = <<<PHP
