@@ -20,6 +20,9 @@
     <!-- Exclude node modules if present -->
     <exclude-pattern>*/node_modules/*</exclude-pattern>
 
+    <!-- Exclude Blade views (linted by php-cs-fixer, not PHP_CodeSniffer) -->
+    <exclude-pattern>*.blade.php</exclude-pattern>
+
     <!-- Show progress -->
     <arg name="colors"/>
     <arg value="p"/>
