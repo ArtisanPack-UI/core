@@ -169,7 +169,7 @@ test( 'command description is set', function (): void {
 
 test( 'all expected packages are available', function (): void {
     $command  = new InstallPackagesCommand;
-    $packages = getProtectedProperty( $command, 'composerPackages');
+    $packages = getProtectedProperty( $command, 'composerPackages' );
 
     $expectedPackages = [
         'artisanpack-ui/accessibility',

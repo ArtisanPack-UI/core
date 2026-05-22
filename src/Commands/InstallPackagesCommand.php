@@ -595,8 +595,8 @@ class InstallPackagesCommand extends Command
         $this->info( 'Running post-install commands...' );
 
         foreach ( $commands as $packageName => $command ) {
-            $this->line( "Running {$command} for {$packageName}...");
-            $this->call( $command);
+            $this->line( "Running {$command} for {$packageName}..." );
+            $this->call( $command );
         }
     }
 
@@ -606,28 +606,28 @@ class InstallPackagesCommand extends Command
      * @param  array<string>  $composerPackages  Installed Composer packages.
      * @param  array<string>  $npmPackages  Installed NPM packages.
      */
-    protected function displayNextSteps( array $composerPackages, array $npmPackages): void
+    protected function displayNextSteps( array $composerPackages, array $npmPackages ): void
     {
         $this->newLine();
-        $this->info( 'Installation complete!');
+        $this->info( 'Installation complete!' );
         $this->newLine();
-        $this->line( 'Next steps:');
+        $this->line( 'Next steps:' );
 
         // Check if any package might need migrations
         $packagesNeedingMigrations = ['artisanpack-ui/media-library', 'artisanpack-ui/cms-framework'];
-        $needsMigrations           = ! empty( array_intersect( $composerPackages, $packagesNeedingMigrations));
+        $needsMigrations           = ! empty( array_intersect( $composerPackages, $packagesNeedingMigrations ) );
 
-        if ( $needsMigrations) {
-            $this->line( '  • Run migrations: php artisan migrate');
+        if ( $needsMigrations ) {
+            $this->line( '  • Run migrations: php artisan migrate' );
         }
 
         // Check if livewire-ui-components was installed
-        if ( in_array( 'artisanpack-ui/livewire-ui-components', $composerPackages, true)) {
-            $this->line( '  • Import theme CSS in your main stylesheet');
+        if ( in_array( 'artisanpack-ui/livewire-ui-components', $composerPackages, true ) ) {
+            $this->line( '  • Import theme CSS in your main stylesheet' );
         }
 
-        if ( ! empty( $npmPackages) || in_array( 'artisanpack-ui/livewire-ui-components', $composerPackages, true)) {
-            $this->line( '  • Recompile assets: npm run dev');
+        if ( ! empty( $npmPackages ) || in_array( 'artisanpack-ui/livewire-ui-components', $composerPackages, true ) ) {
+            $this->line( '  • Recompile assets: npm run dev' );
         }
 
         $this->line( '  • Review configuration: config/artisanpack.php');
