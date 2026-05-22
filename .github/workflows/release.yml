@@ -5,6 +5,9 @@ on:
     tags:
       - 'v*'
 
+permissions:
+  contents: read
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -97,7 +100,7 @@ jobs:
       - name: Update Packagist
         if: success()
         run: |
-          curl -s -X POST \
+          curl --fail-with-body -sS -X POST \
             "https://packagist.org/api/update-package?username=${{ secrets.PACKAGIST_USERNAME }}&apiToken=${{ secrets.PACKAGIST_API_TOKEN }}" \
             -d "{\"repository\":{\"url\":\"https://github.com/${{ github.repository }}\"}}" \
             -H "Content-Type: application/json"
