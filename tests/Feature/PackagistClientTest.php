@@ -13,11 +13,8 @@ use Illuminate\Support\Facades\Http;
  */
 function packagistPayload( string $package, array $versions ): array
 {
-    $packages = [];
-    $packages[ $package ] = $versions;
-
     return [
-        'packages' => $packages,
+        'packages' => [ $package => $versions ],
     ];
 }
 
@@ -30,12 +27,12 @@ function packagistPayload( string $package, array $versions ): array
  */
 function packagistFakeMap( string $package, array $versions ): array
 {
-    $url = 'repo.packagist.org/p2/' . $package . '.json';
+    $url      = 'repo.packagist.org/p2/' . $package . '.json';
+    $response = Http::response( packagistPayload( $package, $versions ) );
 
-    $map = [];
-    $map[ $url ] = Http::response( packagistPayload( $package, $versions ) );
-
-    return $map;
+    return [
+        $url => $response,
+    ];
 }
 
 beforeEach( function (): void {
@@ -44,9 +41,10 @@ beforeEach( function (): void {
 } );
 
 test( 'returns the latest stable release and skips dev/pre-release versions', function (): void {
-    $stableRelease = [];
-    $stableRelease['version']     = '1.2.0';
-    $stableRelease['description'] = 'Stable release';
+    $stableRelease = [
+        'version'     => '1.2.0',
+        'description' => 'Stable release',
+    ];
 
     Http::fake( packagistFakeMap( 'artisanpack-ui/core', [
         ['version' => 'dev-main'],
@@ -63,10 +61,11 @@ test( 'returns the latest stable release and skips dev/pre-release versions', fu
 } );
 
 test( 'returns null when packagist responds with an error', function (): void {
-    $map = [];
-    $map['repo.packagist.org/p2/artisanpack-ui/missing.json'] = Http::response( '', 404 );
+    $errorResponse = Http::response( '', 404 );
 
-    Http::fake( $map );
+    Http::fake( [
+        'repo.packagist.org/p2/artisanpack-ui/missing.json' => $errorResponse,
+    ] );
 
     $latest = $this->client->getLatestRelease( 'artisanpack-ui/missing' );
 
