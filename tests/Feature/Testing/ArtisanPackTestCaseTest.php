@@ -11,15 +11,14 @@ use ArtisanPackUI\Core\Testing\Concerns\ArtisanPackAssertions;
 use ArtisanPackUI\Core\Testing\Concerns\InteractsWithConfiguration;
 use ArtisanPackUI\Core\Testing\Concerns\MocksArtisanPackServices;
 use ArtisanPackUI\Core\View\BladeDirectiveRegistrar;
-use Illuminate\Support\Facades\Facade;
 use Mockery\MockInterface;
 use Orchestra\Testbench\TestCase as Orchestra;
 use PHPUnit\Framework\AssertionFailedError;
 use Tests\Fixtures\Facades\TestFacade;
 use Tests\Fixtures\TestFacadeService;
-use Tests\Fixtures\TestPackageServiceProvider;
 use Tests\Fixtures\Testing\StubArtisanPackTestCase;
 use Tests\Fixtures\Testing\StubArtisanPackTestCaseWithProviders;
+use Tests\Fixtures\TestPackageServiceProvider;
 
 uses(
 	ArtisanPackAssertions::class,
@@ -251,6 +250,3 @@ test( 'swapBladeDirectiveRegistrar replaces the bound BladeDirectiveRegistrar', 
 		->and( $this->app->make( BladeDirectiveRegistrar::class ) )->toBe( $replacement );
 } );
 
-test( 'Facade import is referenced to keep the abstract test case discoverable in IDEs', function (): void {
-	expect( class_exists( Facade::class ) )->toBeTrue();
-} );
