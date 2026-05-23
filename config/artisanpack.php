@@ -25,6 +25,34 @@
  */
 return [
 
+	'core' => [
+
+		/*
+		|--------------------------------------------------------------------------
+		| Shared Logging
+		|--------------------------------------------------------------------------
+		|
+		| Controls how every ArtisanPack UI package routes its log messages and
+		| audit entries. Setting "channel" to a value other than null forwards
+		| every entry through a dedicated Laravel log channel ( the channel must
+		| exist in your application's config/logging.php ). Leaving it null falls
+		| back to Laravel's default log channel.
+		|
+		| Audit entries are written at info level with an "[AUDIT]" prefix and an
+		| accompanying AuditLogCreated event is dispatched so applications can
+		| persist them to a database, forward them to an external service, or
+		| trigger notifications.
+		|
+		*/
+		'logging' => [
+			'channel' => env( 'ARTISANPACK_LOG_CHANNEL' ),
+			'audit'   => [
+				'enabled' => true,
+			],
+		],
+
+	],
+
 	// Add your package-specific overrides here.
 
 ];
