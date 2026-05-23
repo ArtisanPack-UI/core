@@ -58,9 +58,15 @@ test( 'isAvailable reports false when the service is not bound', function (): vo
 } );
 
 test( 'isAvailable reports false when the application container is unavailable', function (): void {
-	TestFacade::setFacadeApplication( null );
+	$app = $this->app;
 
-	expect( TestFacade::isAvailable() )->toBeFalse();
+	try {
+		TestFacade::setFacadeApplication( null );
+
+		expect( TestFacade::isAvailable() )->toBeFalse();
+	} finally {
+		TestFacade::setFacadeApplication( $app );
+	}
 } );
 
 test( 'tryGet returns the resolved service when it is bound', function (): void {
@@ -75,9 +81,15 @@ test( 'tryGet returns null when the service is not bound', function (): void {
 } );
 
 test( 'tryGet returns null when the application container is unavailable', function (): void {
-	TestFacade::setFacadeApplication( null );
+	$app = $this->app;
 
-	expect( TestFacade::tryGet() )->toBeNull();
+	try {
+		TestFacade::setFacadeApplication( null );
+
+		expect( TestFacade::tryGet() )->toBeNull();
+	} finally {
+		TestFacade::setFacadeApplication( $app );
+	}
 } );
 
 test( 'resolved instances are cached on repeat lookups', function (): void {
