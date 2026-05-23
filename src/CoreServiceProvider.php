@@ -5,7 +5,10 @@ namespace ArtisanPackUI\Core;
 use ArtisanPackUI\Core\Commands\InstallPackagesCommand;
 use ArtisanPackUI\Core\Commands\ScaffoldConfigCommand;
 use ArtisanPackUI\Core\Config\ConfigurationManager;
+use ArtisanPackUI\Core\Logging\LoggerFactory;
 use Illuminate\Contracts\Config\Repository;
+use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\Log\LogManager;
 use Illuminate\Support\ServiceProvider;
 
 class CoreServiceProvider extends ServiceProvider
@@ -18,6 +21,14 @@ class CoreServiceProvider extends ServiceProvider
 
         $this->app->singleton( ConfigurationManager::class, function ( $app ) {
             return new ConfigurationManager( $app->make( Repository::class ) );
+        } );
+
+        $this->app->singleton( LoggerFactory::class, function ( $app ) {
+            return new LoggerFactory(
+                $app->make( LogManager::class ),
+                $app->make( Dispatcher::class ),
+                $app->make( Repository::class ),
+            );
         } );
     }
 

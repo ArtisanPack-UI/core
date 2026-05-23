@@ -65,7 +65,8 @@
       ],
       "aliases": {
         "Core": "ArtisanPackUI\\Core\\Facades\\Core",
-        "ArtisanPackConfig": "ArtisanPackUI\\Core\\Facades\\ArtisanPackConfig"
+        "ArtisanPackConfig": "ArtisanPackUI\\Core\\Facades\\ArtisanPackConfig",
+        "ArtisanPackLog": "ArtisanPackUI\\Core\\Facades\\ArtisanPackLog"
       }
     }
   }
