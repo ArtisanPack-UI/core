@@ -104,7 +104,11 @@ class DiagnosticReport
             return $this->cachedCounts;
         }
 
-        $counts = ['passed' => 0, 'warnings' => 0, 'errors' => 0];
+        $counts = [
+            'passed'   => 0,
+            'warnings' => 0,
+            'errors'   => 0,
+        ];
 
         foreach ( $this->allResults() as $result ) {
             if ( $result->passed() ) {

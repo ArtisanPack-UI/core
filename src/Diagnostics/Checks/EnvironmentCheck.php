@@ -89,14 +89,20 @@ class EnvironmentCheck implements DiagnosticCheck
             $results[] = new DiagnosticResult(
                 label: 'PHP Extensions: ' . implode( ', ', self::REQUIRED_EXTENSIONS ),
                 status: DiagnosticStatus::Pass,
-                details: ['required' => self::REQUIRED_EXTENSIONS, 'missing' => []],
+                details: [
+                    'required' => self::REQUIRED_EXTENSIONS,
+                    'missing'  => [],
+                ],
             );
         } else {
             $results[] = new DiagnosticResult(
                 label: 'PHP Extensions missing: ' . implode( ', ', $missingExtensions ),
                 status: DiagnosticStatus::Error,
                 message: 'Install the missing PHP extensions before running ArtisanPack UI.',
-                details: ['required' => self::REQUIRED_EXTENSIONS, 'missing' => $missingExtensions],
+                details: [
+                    'required' => self::REQUIRED_EXTENSIONS,
+                    'missing'  => $missingExtensions,
+                ],
             );
         }
 
