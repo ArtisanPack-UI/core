@@ -144,9 +144,9 @@ class ConfigurationCheck implements DiagnosticCheck
                 continue;
             }
 
-            $keys[] = Str::kebab( $shortName);
+            $keys[] = Str::kebab( $shortName );
         }
 
-        return array_values( array_unique( $keys));
+        return array_values( array_unique( $keys ) );
     }
 }

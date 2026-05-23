@@ -90,8 +90,13 @@ test( 'environment check verifies the running php version', function (): void {
     $results = $check->run();
 
     expect( $results )->not->toBeEmpty();
-    expect( $results[0]->label )->toContain( PHP_VERSION );
-    expect( $results[0]->status )->toBe( DiagnosticStatus::Pass );
+
+    $phpResult = collect( $results )->first(
+        fn ( DiagnosticResult $r ) => str_contains( $r->label, PHP_VERSION ),
+    );
+
+    expect( $phpResult )->not->toBeNull();
+    expect( $phpResult->status )->toBe( DiagnosticStatus::Pass );
 } );
 
 test( 'installed packages check identifies the core package', function (): void {
@@ -114,11 +119,11 @@ test( 'artisan commands check finds registered diagnose command', function (): v
 } );
 
 test( 'fixable checks filter excludes static checks', function (): void {
-    $runner = new DiagnosticRunner( app());
+    $runner = new DiagnosticRunner( app() );
 
     $fixable = $runner->fixableChecks();
 
-    foreach ( $fixable as $check) {
-        expect( $check->supportsFix())->toBeTrue();
+    foreach ( $fixable as $check ) {
+        expect( $check->supportsFix() )->toBeTrue();
     }
 });

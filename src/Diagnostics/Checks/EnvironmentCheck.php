@@ -19,6 +19,20 @@ class EnvironmentCheck implements DiagnosticCheck
 
     public const MIN_LARAVEL_VERSION = '10.0.0';
 
+    /**
+     * PHP extensions required by Laravel core that ArtisanPack UI also relies on.
+     *
+     * @var array<int, string>
+     */
+    public const REQUIRED_EXTENSIONS = [
+        'ctype',
+        'json',
+        'mbstring',
+        'openssl',
+        'pdo',
+        'tokenizer',
+    ];
+
     public function __construct( protected Application $app )
     {
     }
@@ -63,6 +77,26 @@ class EnvironmentCheck implements DiagnosticCheck
                 label: "Livewire Version: {$livewireVersion}",
                 status: DiagnosticStatus::Pass,
                 details: ['current' => $livewireVersion],
+            );
+        }
+
+        $missingExtensions = array_values( array_filter(
+            self::REQUIRED_EXTENSIONS,
+            fn ( string $extension ) => ! extension_loaded( $extension ),
+        ) );
+
+        if ( empty( $missingExtensions ) ) {
+            $results[] = new DiagnosticResult(
+                label: 'PHP Extensions: ' . implode( ', ', self::REQUIRED_EXTENSIONS ),
+                status: DiagnosticStatus::Pass,
+                details: ['required' => self::REQUIRED_EXTENSIONS, 'missing' => []],
+            );
+        } else {
+            $results[] = new DiagnosticResult(
+                label: 'PHP Extensions missing: ' . implode( ', ', $missingExtensions ),
+                status: DiagnosticStatus::Error,
+                message: 'Install the missing PHP extensions before running ArtisanPack UI.',
+                details: ['required' => self::REQUIRED_EXTENSIONS, 'missing' => $missingExtensions],
             );
         }
 

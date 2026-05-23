@@ -98,7 +98,7 @@ class DiagnosticRunner
             new InstalledPackagesCheck,
             new ConfigurationCheck( $this->app ),
             new ServiceBindingsCheck( $this->app ),
-            new ArtisanCommandsCheck( $this->app),
+            new ArtisanCommandsCheck( $this->app ),
         ];
     }
 }

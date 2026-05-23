@@ -56,6 +56,6 @@ class CoreServiceProvider extends ServiceProvider
             ScaffoldConfigCommand::class,
             InstallPackagesCommand::class,
             DiagnoseCommand::class,
-        ]);
+        ] );
     }
 }

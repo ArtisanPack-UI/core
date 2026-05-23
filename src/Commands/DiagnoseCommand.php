@@ -146,11 +146,11 @@ class DiagnoseCommand extends Command
             if ( is_scalar( $value ) ) {
                 $printable = (string) $value;
             } else {
-                $encoded   = json_encode( $value);
+                $encoded   = json_encode( $value );
                 $printable = false === $encoded ? '<non-serializable>' : $encoded;
             }
 
-            $this->line( "      - {$key}: {$printable}");
+            $this->line( "      - {$key}: {$printable}" );
         }
     }
 }

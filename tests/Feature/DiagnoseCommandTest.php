@@ -213,16 +213,16 @@ test( 'verbose flag prints result details', function (): void {
             return false;
         }
 
-        public function fix( callable $writer): bool
+        public function fix( callable $writer ): bool
         {
             return false;
         }
     };
 
-    $this->runner->setChecks( [$detailed]);
+    $this->runner->setChecks( [$detailed] );
 
-    $this->artisan( 'artisanpack:diagnose', ['--verbose' => true])
-        ->expectsOutputToContain( 'current: 8.4.3')
-        ->expectsOutputToContain( 'minimum: 8.2.0')
-        ->assertExitCode( 0);
-});
+    $this->artisan( 'artisanpack:diagnose', ['--verbose' => true] )
+        ->expectsOutputToContain( 'current: 8.4.3' )
+        ->expectsOutputToContain( 'minimum: 8.2.0' )
+        ->assertExitCode( 0 );
+} );
