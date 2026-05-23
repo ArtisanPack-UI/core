@@ -3,6 +3,9 @@
 use ArtisanPackUI\Core\Commands\CheckUpdatesCommand;
 use ArtisanPackUI\Core\Updates\PackagistClient;
 use ArtisanPackUI\Core\Updates\UpdateChecker;
+use Illuminate\Contracts\Cache\Repository as CacheRepository;
+use Illuminate\Contracts\Config\Repository as ConfigRepository;
+use Illuminate\Http\Client\Factory as HttpFactory;
 use Illuminate\Support\Facades\Artisan;
 
 /**
@@ -41,13 +44,13 @@ function packagistRelease( string $version, ?string $description = null, ?string
 }
 
 beforeEach( function (): void {
-    $this->client = new class extends PackagistClient {
+    $http   = $this->app->make( HttpFactory::class );
+    $cache  = $this->app->make( CacheRepository::class );
+    $config = $this->app->make( ConfigRepository::class );
+
+    $this->client = new class( $http, $cache, $config ) extends PackagistClient {
         /** @var array<string, array<string, mixed>|null> */
         public array $releases = [];
-
-        public function __construct()
-        {
-        }
 
         public function getLatestRelease( string $package ): ?array
         {
@@ -58,7 +61,7 @@ beforeEach( function (): void {
         {
             $release = $this->releases[ $package ] ?? null;
 
-            return null === $release ? [] : [ $release ];
+            return null === $release ? [] : [$release];
         }
 
         public function forget( string $package ): void
@@ -94,11 +97,17 @@ test( 'reports updates available with version transitions and types', function (
         updatePackage( 'artisanpack-ui/livewire-ui-components', '1.0.0' ),
     ] );
 
+    $securityRelease = packagistRelease( '2.1.0', 'Fixed XSS vulnerability in sanitizer' );
+
     $this->client->releases = [
         'artisanpack-ui/core'                   => packagistRelease( '1.2.0' ),
-        'artisanpack-ui/security'               => packagistRelease( '2.1.0', 'Fixed XSS vulnerability in sanitizer' ),
+        'artisanpack-ui/security'               => $securityRelease,
         'artisanpack-ui/livewire-ui-components' => packagistRelease( '2.0.0' ),
     ];
+
+    $upgradeCommand = 'composer update artisanpack-ui/core'
+        . ' artisanpack-ui/livewire-ui-components'
+        . ' artisanpack-ui/security';
 
     $this->artisan( 'artisanpack:check-updates' )
         ->expectsOutputToContain( 'ArtisanPack UI Update Check' )
@@ -108,7 +117,7 @@ test( 'reports updates available with version transitions and types', function (
         ->expectsOutputToContain( 'Breaking changes' )
         ->expectsOutputToContain( '🔒 Security-related release' )
         ->expectsOutputToContain( '3 packages have updates available' )
-        ->expectsOutputToContain( 'composer update artisanpack-ui/core artisanpack-ui/livewire-ui-components artisanpack-ui/security' )
+        ->expectsOutputToContain( $upgradeCommand )
         ->assertExitCode( 0 );
 } );
 
@@ -154,9 +163,12 @@ test( 'security-only filter shows only security-flagged updates', function (): v
         updatePackage( 'artisanpack-ui/security', '2.0.0' ),
     ] );
 
+    $coreRelease     = packagistRelease( '1.2.0', 'General improvements' );
+    $securityRelease = packagistRelease( '2.1.0', 'Fixed XSS vulnerability in sanitizer' );
+
     $this->client->releases = [
-        'artisanpack-ui/core'     => packagistRelease( '1.2.0', 'General improvements' ),
-        'artisanpack-ui/security' => packagistRelease( '2.1.0', 'Fixed XSS vulnerability in sanitizer' ),
+        'artisanpack-ui/core'     => $coreRelease,
+        'artisanpack-ui/security' => $securityRelease,
     ];
 
     $this->artisan( 'artisanpack:check-updates', ['--security-only' => true] )

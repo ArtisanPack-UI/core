@@ -13,11 +13,29 @@ use Illuminate\Support\Facades\Http;
  */
 function packagistPayload( string $package, array $versions ): array
 {
+    $packages = [];
+    $packages[ $package ] = $versions;
+
     return [
-        'packages' => [
-            $package => $versions,
-        ],
+        'packages' => $packages,
     ];
+}
+
+/**
+ * Build the fake Http::fake() map for a single packagist package URL.
+ *
+ * @param  array<int, array<string, mixed>>  $versions
+ *
+ * @return array<string, mixed>
+ */
+function packagistFakeMap( string $package, array $versions ): array
+{
+    $url = 'repo.packagist.org/p2/' . $package . '.json';
+
+    $map = [];
+    $map[ $url ] = Http::response( packagistPayload( $package, $versions ) );
+
+    return $map;
 }
 
 beforeEach( function (): void {
@@ -26,17 +44,16 @@ beforeEach( function (): void {
 } );
 
 test( 'returns the latest stable release and skips dev/pre-release versions', function (): void {
-    Http::fake( [
-        'repo.packagist.org/p2/artisanpack-ui/core.json' => Http::response( packagistPayload( 'artisanpack-ui/core', [
-            [ 'version' => 'dev-main' ],
-            [ 'version' => '2.0.0-beta.1' ],
-            [
-                'version'     => '1.2.0',
-                'description' => 'Stable release',
-            ],
-            [ 'version' => '1.1.0' ],
-        ] ) ),
-    ] );
+    $stableRelease = [];
+    $stableRelease['version']     = '1.2.0';
+    $stableRelease['description'] = 'Stable release';
+
+    Http::fake( packagistFakeMap( 'artisanpack-ui/core', [
+        ['version' => 'dev-main'],
+        ['version' => '2.0.0-beta.1'],
+        $stableRelease,
+        ['version' => '1.1.0'],
+    ] ) );
 
     $latest = $this->client->getLatestRelease( 'artisanpack-ui/core' );
 
@@ -46,9 +63,10 @@ test( 'returns the latest stable release and skips dev/pre-release versions', fu
 } );
 
 test( 'returns null when packagist responds with an error', function (): void {
-    Http::fake( [
-        'repo.packagist.org/p2/artisanpack-ui/missing.json' => Http::response( '', 404 ),
-    ] );
+    $map = [];
+    $map['repo.packagist.org/p2/artisanpack-ui/missing.json'] = Http::response( '', 404 );
+
+    Http::fake( $map );
 
     $latest = $this->client->getLatestRelease( 'artisanpack-ui/missing' );
 
@@ -56,11 +74,9 @@ test( 'returns null when packagist responds with an error', function (): void {
 } );
 
 test( 'caches results so subsequent calls do not re-query packagist', function (): void {
-    Http::fake( [
-        'repo.packagist.org/p2/artisanpack-ui/core.json' => Http::response( packagistPayload( 'artisanpack-ui/core', [
-            [ 'version' => '1.2.0' ],
-        ] ) ),
-    ] );
+    Http::fake( packagistFakeMap( 'artisanpack-ui/core', [
+        ['version' => '1.2.0'],
+    ] ) );
 
     $this->client->getLatestRelease( 'artisanpack-ui/core' );
     $this->client->getLatestRelease( 'artisanpack-ui/core' );
@@ -69,14 +85,12 @@ test( 'caches results so subsequent calls do not re-query packagist', function (
 } );
 
 test( 'sorts releases by version so the newest stable is returned first', function (): void {
-    Http::fake( [
-        'repo.packagist.org/p2/artisanpack-ui/core.json' => Http::response( packagistPayload( 'artisanpack-ui/core', [
-            [ 'version' => '1.1.0' ],
-            [ 'version' => '1.2.0' ],
-            [ 'version' => '1.1.5' ],
-            [ 'version' => '1.0.0' ],
-        ] ) ),
-    ] );
+    Http::fake( packagistFakeMap( 'artisanpack-ui/core', [
+        ['version' => '1.1.0'],
+        ['version' => '1.2.0'],
+        ['version' => '1.1.5'],
+        ['version' => '1.0.0'],
+    ] ) );
 
     $latest = $this->client->getLatestRelease( 'artisanpack-ui/core' );
 
@@ -85,11 +99,9 @@ test( 'sorts releases by version so the newest stable is returned first', functi
 } );
 
 test( 'forget clears the cache for a package', function (): void {
-    Http::fake( [
-        'repo.packagist.org/p2/artisanpack-ui/core.json' => Http::response( packagistPayload( 'artisanpack-ui/core', [
-            [ 'version' => '1.2.0' ],
-        ] ) ),
-    ] );
+    Http::fake( packagistFakeMap( 'artisanpack-ui/core', [
+        ['version' => '1.2.0'],
+    ] ) );
 
     $this->client->getLatestRelease( 'artisanpack-ui/core' );
     $this->client->forget( 'artisanpack-ui/core' );
