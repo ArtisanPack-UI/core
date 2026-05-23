@@ -10,6 +10,10 @@
 
 namespace ArtisanPackUI\Core\Logging;
 
+// PHP requires the lowercase __construct magic method; the
+// MagicMethodNotUppercase sniff misfires on the constructor here.
+// phpcs:disable ArtisanPackUI.TypeHints.TypeDeclaration.MagicMethodNotUppercase
+
 use ArtisanPackUI\Core\Enums\LogLevel;
 use ArtisanPackUI\Core\Events\AuditLogCreated;
 use Closure;
@@ -131,7 +135,7 @@ class Logger implements ArtisanPackLogger
 			'timestamp'  => $this->resolveTimestamp(),
 		];
 
-		$this->channel()->info( "[AUDIT] {$action}", $auditData );
+		$this->channel()->info( "[AUDIT] [{$this->package}] {$action}", $auditData );
 
 		$this->dispatcher->dispatch( new AuditLogCreated( $auditData ) );
 	}

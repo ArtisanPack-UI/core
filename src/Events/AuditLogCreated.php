@@ -10,6 +10,10 @@
 
 namespace ArtisanPackUI\Core\Events;
 
+// PHP requires the lowercase __construct magic method; the
+// MagicMethodNotUppercase sniff misfires on the constructor here.
+// phpcs:disable ArtisanPackUI.TypeHints.TypeDeclaration.MagicMethodNotUppercase
+
 /**
  * Notifies the application that an ArtisanPack UI package has recorded an
  * audit entry.

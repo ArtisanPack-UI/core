@@ -1,10 +1,12 @@
 <?php
 
 // PSR-3 LoggerInterface fixes the signatures we must match below; the local
-// `&` references used to capture closure context cannot be typed either.
+// `&` references used to capture closure context cannot be typed either; and
+// PHP requires the lowercase __construct magic method.
 // phpcs:disable ArtisanPackUI.TypeHints.TypeDeclaration.MissingParameterTypeDeclaration
 // phpcs:disable ArtisanPackUI.Formatting.Spacing.NoSpaceAfterOperator
 // phpcs:disable ArtisanPackUI.Security.ValidatedSanitizedInput.InputNotSanitized
+// phpcs:disable ArtisanPackUI.TypeHints.TypeDeclaration.MagicMethodNotUppercase
 
 use ArtisanPackUI\Core\Events\AuditLogCreated;
 use ArtisanPackUI\Core\Facades\ArtisanPackLog;
@@ -174,7 +176,7 @@ test( 'audit records an info-level entry with the structured payload', function 
 
 	expect( $this->recordedLogs )->toHaveCount( 1 );
 	expect( $this->recordedLogs[0]['level'] )->toBe( 'info' );
-	expect( $this->recordedLogs[0]['message'] )->toBe( '[AUDIT] media.uploaded' );
+	expect( $this->recordedLogs[0]['message'] )->toBe( '[AUDIT] [media-library] media.uploaded' );
 
 	$context = $this->recordedLogs[0]['context'];
 	expect( $context['package'] )->toBe( 'media-library' );

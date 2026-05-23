@@ -10,6 +10,10 @@
 
 namespace ArtisanPackUI\Core\Logging;
 
+// PHP requires the lowercase __construct magic method; the
+// MagicMethodNotUppercase sniff misfires on the constructor here.
+// phpcs:disable ArtisanPackUI.TypeHints.TypeDeclaration.MagicMethodNotUppercase
+
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Log\LogManager;
