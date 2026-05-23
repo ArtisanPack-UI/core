@@ -107,6 +107,16 @@ class PackagistClient
             $stable[] = $entry;
         }
 
+        usort(
+            $stable,
+            static function ( array $a, array $b ): int {
+                $aVersion = ltrim( (string) ( $a['version'] ?? '' ), 'v' );
+                $bVersion = ltrim( (string) ( $b['version'] ?? '' ), 'v' );
+
+                return version_compare( $bVersion, $aVersion );
+            },
+        );
+
         return $stable;
     }
 

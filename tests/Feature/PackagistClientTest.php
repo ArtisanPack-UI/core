@@ -68,6 +68,22 @@ test( 'caches results so subsequent calls do not re-query packagist', function (
     Http::assertSentCount( 1 );
 } );
 
+test( 'sorts releases by version so the newest stable is returned first', function (): void {
+    Http::fake( [
+        'repo.packagist.org/p2/artisanpack-ui/core.json' => Http::response( packagistPayload( 'artisanpack-ui/core', [
+            [ 'version' => '1.1.0' ],
+            [ 'version' => '1.2.0' ],
+            [ 'version' => '1.1.5' ],
+            [ 'version' => '1.0.0' ],
+        ] ) ),
+    ] );
+
+    $latest = $this->client->getLatestRelease( 'artisanpack-ui/core' );
+
+    expect( $latest )->not->toBeNull();
+    expect( $latest['version'] )->toBe( '1.2.0' );
+} );
+
 test( 'forget clears the cache for a package', function (): void {
     Http::fake( [
         'repo.packagist.org/p2/artisanpack-ui/core.json' => Http::response( packagistPayload( 'artisanpack-ui/core', [

@@ -218,6 +218,24 @@ test( 'json output emits structured report', function (): void {
     expect( $decoded['updates'][0]['type'] )->toBe( 'minor' );
 } );
 
+test( 'summary distinguishes uncheckable packages from a clean slate', function (): void {
+    $this->checker->setPackages( [
+        updatePackage( 'artisanpack-ui/core', '1.2.0' ),
+        updatePackage( 'artisanpack-ui/security', '2.0.0' ),
+    ] );
+
+    $this->client->releases = [
+        'artisanpack-ui/core'     => packagistRelease( '1.2.0' ),
+        'artisanpack-ui/security' => null,
+    ];
+
+    $this->artisan( 'artisanpack:check-updates' )
+        ->expectsOutputToContain( 'No updates found for checked packages' )
+        ->expectsOutputToContain( '1 package could not be checked' )
+        ->doesntExpectOutputToContain( 'All packages are up to date' )
+        ->assertExitCode( 0 );
+} );
+
 test( 'reports errors when packagist has no data for a package', function (): void {
     $this->checker->setPackages( [
         updatePackage( 'artisanpack-ui/core', '1.1.0' ),

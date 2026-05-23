@@ -189,11 +189,15 @@ class CheckUpdatesCommand extends Command
         $updates  = (int) ( $summary['updates_available'] ?? 0 );
         $major    = (int) ( $summary['major_updates'] ?? 0 );
         $security = (int) ( $summary['security_updates'] ?? 0 );
+        $errors   = (int) ( $summary['errors'] ?? 0 );
 
         $this->line( 'Summary:' );
 
-        if ( 0 === $updates ) {
+        if ( 0 === $updates && 0 === $errors ) {
             $this->line( '  All packages are up to date' );
+        } elseif ( 0 === $updates ) {
+            $this->line( '  No updates found for checked packages' );
+            $this->line( "  {$errors} " . ( 1 === $errors ? 'package could not be checked' : 'packages could not be checked' ) );
         } else {
             $this->line( "  {$updates} " . ( 1 === $updates ? 'package has' : 'packages have' ) . ' updates available' );
         }
