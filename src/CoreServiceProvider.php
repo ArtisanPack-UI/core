@@ -2,9 +2,11 @@
 
 namespace ArtisanPackUI\Core;
 
+use ArtisanPackUI\Core\Commands\CheckCompatibilityCommand;
 use ArtisanPackUI\Core\Commands\DiagnoseCommand;
 use ArtisanPackUI\Core\Commands\InstallPackagesCommand;
 use ArtisanPackUI\Core\Commands\ScaffoldConfigCommand;
+use ArtisanPackUI\Core\Compatibility\CompatibilityChecker;
 use ArtisanPackUI\Core\Config\ConfigurationManager;
 use ArtisanPackUI\Core\Diagnostics\DiagnosticRunner;
 use ArtisanPackUI\Core\Logging\LoggerFactory;
@@ -42,6 +44,10 @@ class CoreServiceProvider extends ServiceProvider
         $this->app->singleton( DiagnosticRunner::class, function ( $app ) {
             return new DiagnosticRunner( $app );
         } );
+
+        $this->app->singleton( CompatibilityChecker::class, function ( $app ) {
+            return new CompatibilityChecker( $app );
+        } );
     }
 
     public function boot(): void
@@ -56,6 +62,7 @@ class CoreServiceProvider extends ServiceProvider
             ScaffoldConfigCommand::class,
             InstallPackagesCommand::class,
             DiagnoseCommand::class,
+            CheckCompatibilityCommand::class,
         ] );
     }
 }
