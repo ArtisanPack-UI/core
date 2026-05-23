@@ -166,6 +166,10 @@ class MakePackageCommand extends Command
     {
         $path = (string) ( $this->option( 'path' ) ?: ( getcwd() . DIRECTORY_SEPARATOR . $package ) );
 
+        if ( DIRECTORY_SEPARATOR === $path || 1 === preg_match( '/^[A-Za-z]:\\\\$/', $path ) ) {
+            return $path;
+        }
+
         return rtrim( $path, DIRECTORY_SEPARATOR );
     }
 
