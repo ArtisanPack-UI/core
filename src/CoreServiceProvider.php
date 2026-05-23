@@ -4,6 +4,8 @@ namespace ArtisanPackUI\Core;
 
 use ArtisanPackUI\Core\Commands\InstallPackagesCommand;
 use ArtisanPackUI\Core\Commands\ScaffoldConfigCommand;
+use ArtisanPackUI\Core\Config\ConfigurationManager;
+use Illuminate\Contracts\Config\Repository;
 use Illuminate\Support\ServiceProvider;
 
 class CoreServiceProvider extends ServiceProvider
@@ -12,6 +14,10 @@ class CoreServiceProvider extends ServiceProvider
     {
         $this->app->singleton( 'core', function ( $app ) {
             return new Core;
+        } );
+
+        $this->app->singleton( ConfigurationManager::class, function ( $app ) {
+            return new ConfigurationManager( $app->make( Repository::class ) );
         } );
     }
 

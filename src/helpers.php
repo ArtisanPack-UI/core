@@ -15,6 +15,45 @@
  * @package ArtisanPackUI\Core
  */
 
+if ( ! function_exists( 'artisanpack_config' ) ) {
+	/**
+	 * Gets a configuration value for an ArtisanPack UI package.
+	 *
+	 * Accepts a dot-notation key where the first segment is the package short
+	 * name and the remaining segments are the key relative to that package
+	 * ( e.g. 'media-library.max_file_size' ). This is a thin wrapper around the
+	 * ArtisanPackUI\Core\Config\ConfigurationManager resolved from the service
+	 * container.
+	 *
+	 * @since 1.2.0
+	 *
+	 * Malformed keys ( missing the package segment, missing the config-key
+	 * segment, or empty either side of the dot ) return the supplied default
+	 * rather than dispatching a nonsensical lookup against the manager.
+	 *
+	 * @param string $key     The dot-notation key of '{package}.{config-key}'.
+	 * @param mixed  $default The value returned when the key is not set.
+	 *
+	 * @return mixed The configuration value, or the default when not set or malformed.
+	 */
+	// Global helpers follow Laravel's snake_case convention ( e.g. config() ).
+	// phpcs:ignore ArtisanPackUI.NamingConventions.NamingConventions.NotCamelCase
+	function artisanpack_config( string $key, mixed $default = null ): mixed
+	{
+		$dotPosition = strpos( $key, '.' );
+
+		if ( false === $dotPosition || 0 === $dotPosition || strlen( $key ) - 1 === $dotPosition ) {
+			return $default;
+		}
+
+		$package   = substr( $key, 0, $dotPosition );
+		$configKey = substr( $key, $dotPosition + 1 );
+
+		return app( ArtisanPackUI\Core\Config\ConfigurationManager::class )
+			->get( $package, $configKey, $default );
+	}
+}
+
 if ( ! function_exists( 'getToastDuration' ) ) {
 	/**
 	 * Gets the configured duration for toast notifications.
