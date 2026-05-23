@@ -2,9 +2,11 @@
 
 namespace ArtisanPackUI\Core;
 
+use ArtisanPackUI\Core\Commands\DiagnoseCommand;
 use ArtisanPackUI\Core\Commands\InstallPackagesCommand;
 use ArtisanPackUI\Core\Commands\ScaffoldConfigCommand;
 use ArtisanPackUI\Core\Config\ConfigurationManager;
+use ArtisanPackUI\Core\Diagnostics\DiagnosticRunner;
 use ArtisanPackUI\Core\Logging\LoggerFactory;
 use ArtisanPackUI\Core\View\BladeDirectiveRegistrar;
 use Illuminate\Contracts\Config\Repository;
@@ -17,38 +19,43 @@ class CoreServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        $this->app->singleton( 'core', function ( $app ) {
+        $this->app->singleton('core', function ($app) {
             return new Core;
-        } );
+        });
 
-        $this->app->singleton( ConfigurationManager::class, function ( $app ) {
-            return new ConfigurationManager( $app->make( Repository::class ) );
-        } );
+        $this->app->singleton(ConfigurationManager::class, function ($app) {
+            return new ConfigurationManager($app->make(Repository::class));
+        });
 
-        $this->app->singleton( LoggerFactory::class, function ( $app ) {
+        $this->app->singleton(LoggerFactory::class, function ($app) {
             return new LoggerFactory(
-                $app->make( LogManager::class ),
-                $app->make( Dispatcher::class ),
-                $app->make( Repository::class ),
+                $app->make(LogManager::class),
+                $app->make(Dispatcher::class),
+                $app->make(Repository::class),
             );
-        } );
+        });
 
-        $this->app->singleton( BladeDirectiveRegistrar::class, function ( $app ) {
-            return new BladeDirectiveRegistrar( $app->make( BladeCompiler::class ) );
-        } );
+        $this->app->singleton(BladeDirectiveRegistrar::class, function ($app) {
+            return new BladeDirectiveRegistrar($app->make(BladeCompiler::class));
+        });
+
+        $this->app->singleton(DiagnosticRunner::class, function ($app) {
+            return new DiagnosticRunner($app);
+        });
     }
 
     public function boot(): void
     {
-        if ( $this->app->runningInConsole() ) {
-            $this->publishes( [
-                __DIR__ . '/../config/artisanpack.php' => config_path( 'artisanpack.php' ),
-            ], 'artisanpack-config' );
+        if ($this->app->runningInConsole()) {
+            $this->publishes([
+                __DIR__.'/../config/artisanpack.php' => config_path('artisanpack.php'),
+            ], 'artisanpack-config');
         }
 
-        $this->commands( [
+        $this->commands([
             ScaffoldConfigCommand::class,
             InstallPackagesCommand::class,
-        ] );
+            DiagnoseCommand::class,
+        ]);
     }
 }
