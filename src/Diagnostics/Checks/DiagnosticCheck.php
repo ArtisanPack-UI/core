@@ -35,11 +35,12 @@ interface DiagnosticCheck
     public function supportsFix(): bool;
 
     /**
-     * Attempt to remediate issues this check detects. Implementations may emit
-     * progress lines via the supplied writer callback. Returns true when something
-     * was fixed, false when no fix was performed.
+     * Attempt to remediate issues this check detects. Implementations should emit
+     * progress lines via the supplied writer callback. Returns true on success
+     * (including no-op when nothing needed fixing) and false only when an attempted
+     * fix failed.
      *
      * @param  callable(string $message): void  $writer
      */
-    public function fix(callable $writer): bool;
+    public function fix( callable $writer ): bool;
 }

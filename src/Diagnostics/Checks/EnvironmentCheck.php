@@ -19,7 +19,9 @@ class EnvironmentCheck implements DiagnosticCheck
 
     public const MIN_LARAVEL_VERSION = '10.0.0';
 
-    public function __construct(protected Application $app) {}
+    public function __construct( protected Application $app )
+    {
+    }
 
     public function id(): string
     {
@@ -36,27 +38,27 @@ class EnvironmentCheck implements DiagnosticCheck
         $results = [];
 
         $phpVersion = PHP_VERSION;
-        $results[] = new DiagnosticResult(
+        $results[]  = new DiagnosticResult(
             label: "PHP Version: {$phpVersion}",
-            status: version_compare($phpVersion, self::MIN_PHP_VERSION, '>=')
+            status: version_compare( $phpVersion, self::MIN_PHP_VERSION, '>=' )
                 ? DiagnosticStatus::Pass
                 : DiagnosticStatus::Error,
-            message: 'minimum: '.self::MIN_PHP_VERSION,
+            message: 'minimum: ' . self::MIN_PHP_VERSION,
             details: ['current' => $phpVersion, 'minimum' => self::MIN_PHP_VERSION],
         );
 
         $laravelVersion = $this->app->version();
-        $results[] = new DiagnosticResult(
+        $results[]      = new DiagnosticResult(
             label: "Laravel Version: {$laravelVersion}",
-            status: version_compare($laravelVersion, self::MIN_LARAVEL_VERSION, '>=')
+            status: version_compare( $laravelVersion, self::MIN_LARAVEL_VERSION, '>=' )
                 ? DiagnosticStatus::Pass
                 : DiagnosticStatus::Error,
-            message: 'minimum: '.self::MIN_LARAVEL_VERSION,
+            message: 'minimum: ' . self::MIN_LARAVEL_VERSION,
             details: ['current' => $laravelVersion, 'minimum' => self::MIN_LARAVEL_VERSION],
         );
 
-        $livewireVersion = $this->detectInstalledVersion('livewire/livewire');
-        if ($livewireVersion !== null) {
+        $livewireVersion = $this->detectInstalledVersion( 'livewire/livewire' );
+        if ( null !== $livewireVersion ) {
             $results[] = new DiagnosticResult(
                 label: "Livewire Version: {$livewireVersion}",
                 status: DiagnosticStatus::Pass,
@@ -72,16 +74,16 @@ class EnvironmentCheck implements DiagnosticCheck
         return false;
     }
 
-    public function fix(callable $writer): bool
+    public function fix( callable $writer ): bool
     {
         return false;
     }
 
-    protected function detectInstalledVersion(string $packageName): ?string
+    protected function detectInstalledVersion( string $packageName ): ?string
     {
-        foreach (ComposerLock::packages() as $package) {
-            if (($package['name'] ?? null) === $packageName) {
-                return ltrim((string) ($package['version'] ?? ''), 'v') ?: null;
+        foreach ( ComposerLock::packages() as $package ) {
+            if ( ( $package['name'] ?? null ) === $packageName ) {
+                return ltrim( (string) ( $package['version'] ?? '' ), 'v' ) ?: null;
             }
         }
 

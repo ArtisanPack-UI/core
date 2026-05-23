@@ -23,7 +23,7 @@ class DiagnosticRunner
      */
     protected array $checks = [];
 
-    public function __construct(protected Application $app)
+    public function __construct( protected Application $app )
     {
         $this->checks = $this->defaultChecks();
     }
@@ -33,7 +33,7 @@ class DiagnosticRunner
      *
      * @param  array<int, DiagnosticCheck>  $checks
      */
-    public function setChecks(array $checks): self
+    public function setChecks( array $checks ): self
     {
         $this->checks = $checks;
 
@@ -51,22 +51,22 @@ class DiagnosticRunner
     /**
      * Run all registered checks, optionally filtered to a single check id.
      */
-    public function run(?string $only = null): DiagnosticReport
+    public function run( ?string $only = null ): DiagnosticReport
     {
         $sections = [];
 
-        foreach ($this->checks as $check) {
-            if ($only !== null && $check->id() !== $only) {
+        foreach ( $this->checks as $check ) {
+            if ( null !== $only && $check->id() !== $only ) {
                 continue;
             }
 
             $sections[] = [
-                'check' => $check,
+                'check'   => $check,
                 'results' => $check->run(),
             ];
         }
 
-        return new DiagnosticReport($sections);
+        return new DiagnosticReport( $sections );
     }
 
     /**
@@ -74,18 +74,18 @@ class DiagnosticRunner
      *
      * @return array<int, DiagnosticCheck>
      */
-    public function fixableChecks(?string $only = null): array
+    public function fixableChecks( ?string $only = null ): array
     {
-        return array_values(array_filter(
+        return array_values( array_filter(
             $this->checks,
-            function (DiagnosticCheck $check) use ($only) {
-                if (! $check->supportsFix()) {
+            function ( DiagnosticCheck $check ) use ( $only ) {
+                if ( ! $check->supportsFix() ) {
                     return false;
                 }
 
-                return $only === null || $check->id() === $only;
+                return null === $only || $check->id() === $only;
             },
-        ));
+        ) );
     }
 
     /**
@@ -94,11 +94,11 @@ class DiagnosticRunner
     protected function defaultChecks(): array
     {
         return [
-            new EnvironmentCheck($this->app),
+            new EnvironmentCheck( $this->app ),
             new InstalledPackagesCheck,
-            new ConfigurationCheck($this->app),
-            new ServiceBindingsCheck($this->app),
-            new ArtisanCommandsCheck($this->app),
+            new ConfigurationCheck( $this->app ),
+            new ServiceBindingsCheck( $this->app ),
+            new ArtisanCommandsCheck( $this->app),
         ];
     }
 }

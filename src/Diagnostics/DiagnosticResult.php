@@ -18,21 +18,22 @@ class DiagnosticResult
         public readonly DiagnosticStatus $status,
         public readonly string $message = '',
         public readonly array $details = [],
-    ) {}
+    ) {
+    }
 
     public function passed(): bool
     {
-        return $this->status === DiagnosticStatus::Pass;
+        return DiagnosticStatus::Pass === $this->status;
     }
 
     public function isWarning(): bool
     {
-        return $this->status === DiagnosticStatus::Warning;
+        return DiagnosticStatus::Warning === $this->status;
     }
 
     public function isError(): bool
     {
-        return $this->status === DiagnosticStatus::Error;
+        return DiagnosticStatus::Error === $this->status;
     }
 
     /**
@@ -41,8 +42,8 @@ class DiagnosticResult
     public function toArray(): array
     {
         return [
-            'label' => $this->label,
-            'status' => $this->status->value,
+            'label'   => $this->label,
+            'status'  => $this->status->value,
             'message' => $this->message,
             'details' => $this->details,
         ];

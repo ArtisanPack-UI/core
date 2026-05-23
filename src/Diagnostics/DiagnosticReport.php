@@ -15,7 +15,9 @@ class DiagnosticReport
     /**
      * @param  array<int, array{check: DiagnosticCheck, results: array<int, DiagnosticResult>}>  $sections
      */
-    public function __construct(public readonly array $sections) {}
+    public function __construct( public readonly array $sections )
+    {
+    }
 
     /**
      * @return array<int, DiagnosticResult>
@@ -24,8 +26,8 @@ class DiagnosticReport
     {
         $all = [];
 
-        foreach ($this->sections as $section) {
-            foreach ($section['results'] as $result) {
+        foreach ( $this->sections as $section ) {
+            foreach ( $section['results'] as $result ) {
                 $all[] = $result;
             }
         }
@@ -35,17 +37,17 @@ class DiagnosticReport
 
     public function passedCount(): int
     {
-        return count(array_filter($this->allResults(), fn ($r) => $r->passed()));
+        return count( array_filter( $this->allResults(), fn ( $r ) => $r->passed() ) );
     }
 
     public function warningCount(): int
     {
-        return count(array_filter($this->allResults(), fn ($r) => $r->isWarning()));
+        return count( array_filter( $this->allResults(), fn ( $r ) => $r->isWarning() ) );
     }
 
     public function errorCount(): int
     {
-        return count(array_filter($this->allResults(), fn ($r) => $r->isError()));
+        return count( array_filter( $this->allResults(), fn ( $r ) => $r->isError() ) );
     }
 
     public function hasErrors(): bool
@@ -60,21 +62,21 @@ class DiagnosticReport
     {
         $sections = [];
 
-        foreach ($this->sections as $section) {
+        foreach ( $this->sections as $section ) {
             /** @var DiagnosticCheck $check */
-            $check = $section['check'];
-            $sections[$check->id()] = [
-                'name' => $check->name(),
-                'results' => array_map(fn (DiagnosticResult $r) => $r->toArray(), $section['results']),
+            $check                    = $section['check'];
+            $sections[ $check->id() ] = [
+                'name'    => $check->name(),
+                'results' => array_map( fn ( DiagnosticResult $r ) => $r->toArray(), $section['results'] ),
             ];
         }
 
         return [
             'sections' => $sections,
-            'summary' => [
-                'passed' => $this->passedCount(),
+            'summary'  => [
+                'passed'   => $this->passedCount(),
                 'warnings' => $this->warningCount(),
-                'errors' => $this->errorCount(),
+                'errors'   => $this->errorCount(),
             ],
         ];
     }

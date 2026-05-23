@@ -26,7 +26,9 @@ class ArtisanCommandsCheck implements DiagnosticCheck
         'artisanpack:diagnose',
     ];
 
-    public function __construct(protected Application $app) {}
+    public function __construct( protected Application $app )
+    {
+    }
 
     public function id(): string
     {
@@ -40,13 +42,13 @@ class ArtisanCommandsCheck implements DiagnosticCheck
 
     public function run(): array
     {
-        $registered = array_keys($this->app->make(Kernel::class)->all());
-        $results = [];
+        $registered = array_keys( $this->app->make( Kernel::class )->all() );
+        $results    = [];
 
-        foreach (self::REQUIRED_COMMANDS as $command) {
+        foreach ( self::REQUIRED_COMMANDS as $command ) {
             $results[] = new DiagnosticResult(
                 label: $command,
-                status: in_array($command, $registered, true)
+                status: in_array( $command, $registered, true )
                     ? DiagnosticStatus::Pass
                     : DiagnosticStatus::Error,
                 details: ['command' => $command],
@@ -61,7 +63,7 @@ class ArtisanCommandsCheck implements DiagnosticCheck
         return false;
     }
 
-    public function fix(callable $writer): bool
+    public function fix( callable $writer ): bool
     {
         return false;
     }

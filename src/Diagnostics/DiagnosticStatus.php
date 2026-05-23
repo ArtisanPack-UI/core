@@ -10,6 +10,15 @@ namespace ArtisanPackUI\Core\Diagnostics;
 
 enum DiagnosticStatus: string
 {
+    public function symbol(): string
+    {
+        return match ( $this ) {
+            self::Pass    => '✓',
+            self::Warning => '⚠',
+            self::Error   => '✗',
+            self::Info    => 'ℹ',
+        };
+    }
     case Pass = 'pass';
 
     case Warning = 'warning';
@@ -17,14 +26,4 @@ enum DiagnosticStatus: string
     case Error = 'error';
 
     case Info = 'info';
-
-    public function symbol(): string
-    {
-        return match ($this) {
-            self::Pass => '✓',
-            self::Warning => '⚠',
-            self::Error => '✗',
-            self::Info => 'ℹ',
-        };
-    }
 }

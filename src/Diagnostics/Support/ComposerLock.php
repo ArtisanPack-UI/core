@@ -18,27 +18,27 @@ class ComposerLock
      */
     public static function packages(): array
     {
-        $lockPath = base_path('composer.lock');
+        $lockPath = base_path( 'composer.lock' );
 
-        if (! file_exists($lockPath)) {
+        if ( ! file_exists( $lockPath ) ) {
             return [];
         }
 
-        $contents = @file_get_contents($lockPath);
+        $contents = @file_get_contents( $lockPath );
 
-        if ($contents === false) {
+        if ( false === $contents ) {
             return [];
         }
 
-        $lock = json_decode($contents, true);
+        $lock = json_decode( $contents, true );
 
-        if (! is_array($lock)) {
+        if ( ! is_array( $lock ) ) {
             return [];
         }
 
-        $production = is_array($lock['packages'] ?? null) ? $lock['packages'] : [];
-        $dev = is_array($lock['packages-dev'] ?? null) ? $lock['packages-dev'] : [];
+        $production = is_array( $lock['packages'] ?? null ) ? $lock['packages'] : [];
+        $dev        = is_array( $lock['packages-dev'] ?? null ) ? $lock['packages-dev'] : [];
 
-        return array_merge($production, $dev);
+        return array_merge( $production, $dev);
     }
 }

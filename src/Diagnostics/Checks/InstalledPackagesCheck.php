@@ -45,11 +45,11 @@ class InstalledPackagesCheck implements DiagnosticCheck
     public function run(): array
     {
         $installed = $this->getInstalledPackageVersions();
-        $results = [];
+        $results   = [];
 
-        foreach (self::KNOWN_PACKAGES as $package) {
-            if (isset($installed[$package])) {
-                $version = $installed[$package];
+        foreach ( self::KNOWN_PACKAGES as $package ) {
+            if ( isset( $installed[ $package ] ) ) {
+                $version   = $installed[ $package ];
                 $results[] = new DiagnosticResult(
                     label: "{$package}: {$version}",
                     status: DiagnosticStatus::Pass,
@@ -73,7 +73,7 @@ class InstalledPackagesCheck implements DiagnosticCheck
         return false;
     }
 
-    public function fix(callable $writer): bool
+    public function fix( callable $writer ): bool
     {
         return false;
     }
@@ -85,14 +85,14 @@ class InstalledPackagesCheck implements DiagnosticCheck
     {
         $packages = [];
 
-        foreach (ComposerLock::packages() as $package) {
+        foreach ( ComposerLock::packages() as $package ) {
             $name = $package['name'] ?? null;
 
-            if (! is_string($name) || ! str_starts_with($name, 'artisanpack-ui/')) {
+            if ( ! is_string( $name ) || ! str_starts_with( $name, 'artisanpack-ui/' ) ) {
                 continue;
             }
 
-            $packages[$name] = ltrim((string) ($package['version'] ?? ''), 'v');
+            $packages[ $name ] = ltrim( (string) ( $package['version'] ?? '' ), 'v' );
         }
 
         return $packages;
