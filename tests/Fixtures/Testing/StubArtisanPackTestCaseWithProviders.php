@@ -2,12 +2,14 @@
 
 namespace Tests\Fixtures\Testing;
 
+use Tests\Fixtures\TestPackageServiceProvider;
+
 class StubArtisanPackTestCaseWithProviders extends StubArtisanPackTestCase
 {
 	protected function getAdditionalProviders(): array
 	{
 		return [
-			'Tests\\Fixtures\\TestPackageServiceProvider',
+			TestPackageServiceProvider::class,
 		];
 	}
 }

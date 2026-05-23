@@ -17,6 +17,7 @@ use Orchestra\Testbench\TestCase as Orchestra;
 use PHPUnit\Framework\AssertionFailedError;
 use Tests\Fixtures\Facades\TestFacade;
 use Tests\Fixtures\TestFacadeService;
+use Tests\Fixtures\TestPackageServiceProvider;
 use Tests\Fixtures\Testing\StubArtisanPackTestCase;
 use Tests\Fixtures\Testing\StubArtisanPackTestCaseWithProviders;
 
@@ -65,7 +66,7 @@ test( 'getPackageProviders merges core providers before any additional providers
 
 	expect( $stub->callGetPackageProviders( $this->app ) )->toBe( [
 		CoreServiceProvider::class,
-		'Tests\\Fixtures\\TestPackageServiceProvider',
+		TestPackageServiceProvider::class,
 	] );
 } );
 
