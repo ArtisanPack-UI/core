@@ -6,10 +6,12 @@ use ArtisanPackUI\Core\Commands\InstallPackagesCommand;
 use ArtisanPackUI\Core\Commands\ScaffoldConfigCommand;
 use ArtisanPackUI\Core\Config\ConfigurationManager;
 use ArtisanPackUI\Core\Logging\LoggerFactory;
+use ArtisanPackUI\Core\View\BladeDirectiveRegistrar;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Log\LogManager;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\View\Compilers\BladeCompiler;
 
 class CoreServiceProvider extends ServiceProvider
 {
@@ -29,6 +31,10 @@ class CoreServiceProvider extends ServiceProvider
                 $app->make( Dispatcher::class ),
                 $app->make( Repository::class ),
             );
+        } );
+
+        $this->app->singleton( BladeDirectiveRegistrar::class, function ( $app ) {
+            return new BladeDirectiveRegistrar( $app->make( BladeCompiler::class ) );
         } );
     }
 

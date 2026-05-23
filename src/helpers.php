@@ -54,6 +54,27 @@ if ( ! function_exists( 'artisanpack_config' ) ) {
 	}
 }
 
+if ( ! function_exists( 'artisanpack_blade' ) ) {
+	/**
+	 * Gets the shared {@see ArtisanPackUI\Core\View\BladeDirectiveRegistrar}.
+	 *
+	 * The registrar exposes intent-revealing methods for registering common
+	 * Blade directive patterns ( echoes, escaped echoes, conditionals, wraps,
+	 * Livewire actions, and facade calls ) and replaces the hand-rolled
+	 * `Blade::directive()` boilerplate most ArtisanPack UI packages need.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @return ArtisanPackUI\Core\View\BladeDirectiveRegistrar The registrar resolved from the container.
+	 */
+	// Global helpers follow Laravel's snake_case convention ( e.g. config() ).
+	// phpcs:ignore ArtisanPackUI.NamingConventions.NamingConventions.NotCamelCase
+	function artisanpack_blade(): ArtisanPackUI\Core\View\BladeDirectiveRegistrar
+	{
+		return app( ArtisanPackUI\Core\View\BladeDirectiveRegistrar::class );
+	}
+}
+
 if ( ! function_exists( 'getToastDuration' ) ) {
 	/**
 	 * Gets the configured duration for toast notifications.

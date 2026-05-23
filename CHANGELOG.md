@@ -4,6 +4,7 @@
 
 ### Added
 
+* **Blade directive registrar**: Added `ArtisanPackUI\Core\View\BladeDirectiveRegistrar` and the matching `artisanpack_blade()` helper. Packages can now declare common directive patterns through intent-revealing methods (`echo`, `escaped`, `conditional`, `wrap`, `livewireAction`, `facade`) instead of hand-rolling PHP-string templates with `Blade::directive()`. Directive names are validated at registration so typos surface immediately rather than at template render. Resolved as a singleton through `CoreServiceProvider`.
 * **Shared logging infrastructure**: Added `ArtisanPackLogger`, `Logger`, and `LoggerFactory` under `ArtisanPackUI\Core\Logging`, plus the `AuditLogCreated` event and the `ArtisanPackLog` facade. Every ArtisanPack UI package can now route logs through a single channel with consistent `[package]` prefixes, structured context, and an `audit()` method that records compliance-relevant actions and dispatches an event applications can listen for. Configurable via `artisanpack.core.logging.channel` ( falls back to Laravel's default channel ) and `artisanpack.core.logging.audit.enabled`.
 * **Laravel 13 support**: Widened the `illuminate/support` constraint from `^11.0|^12.0` to `^11.0|^12.0|^13.0`. Laravel 11 and 12 remain fully supported. This change is additive and backwards compatible — nothing is removed.
 
