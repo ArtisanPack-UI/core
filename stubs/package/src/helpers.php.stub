@@ -1,0 +1,19 @@
+<?php
+
+/**
+ * Helper functions for the {{ PackageName }} package.
+ *
+ * @since   0.1.0
+ *
+ * @package {{ Namespace }}
+ */
+
+if ( ! function_exists( '{{ packageName }}_version' ) ) {
+    /**
+     * Return the installed version of the {{ PackageName }} package.
+     */
+    function {{ packageName }}_version(): string
+    {
+        return app( '{{ package }}' )->version();
+    }
+}

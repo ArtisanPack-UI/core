@@ -1,0 +1,7 @@
+<?php
+
+use {{ Namespace }}\{{ PackageName }};
+
+test( 'version returns a string', function (): void {
+    expect( ( new {{ PackageName }}() )->version() )->toBeString();
+} );

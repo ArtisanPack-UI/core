@@ -1,0 +1,31 @@
+<?php
+
+/**
+ * Example Artisan command for the {{ PackageName }} package.
+ *
+ * @since   1.0.0
+ *
+ * @package {{ Namespace }}\Console\Commands
+ */
+
+declare( strict_types=1 );
+
+namespace {{ Namespace }}\Console\Commands;
+
+use Illuminate\Console\Command;
+use Symfony\Component\Console\Attribute\AsCommand;
+
+#[AsCommand( name: '{{ package }}:example' )]
+class {{ PackageName }}ExampleCommand extends Command
+{
+    protected $signature = '{{ package }}:example';
+
+    protected $description = 'Example command shipped with the {{ PackageName }} package.';
+
+    public function handle(): int
+    {
+        $this->info( 'Hello from {{ PackageName }}!' );
+
+        return self::SUCCESS;
+    }
+}

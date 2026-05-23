@@ -1,0 +1,21 @@
+<?php
+
+/**
+ * Default configuration for the {{ PackageName }} package.
+ *
+ * @since   1.0.0
+ *
+ * @package {{ Namespace }}
+ */
+
+return [
+    /*
+    |--------------------------------------------------------------------------
+    | Enable Package
+    |--------------------------------------------------------------------------
+    |
+    | Master switch for enabling or disabling the package at runtime.
+    |
+    */
+    'enabled' => true,
+];

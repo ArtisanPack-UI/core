@@ -1,0 +1,24 @@
+<?php
+
+/**
+ * Main entry class for the {{ PackageName }} package.
+ *
+ * @since   0.1.0
+ *
+ * @package {{ Namespace }}
+ */
+
+declare( strict_types=1 );
+
+namespace {{ Namespace }};
+
+class {{ PackageName }}
+{
+    /**
+     * Return the package version.
+     */
+    public function version(): string
+    {
+        return '0.1.0';
+    }
+}

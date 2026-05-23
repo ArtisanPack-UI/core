@@ -1,0 +1,23 @@
+<?php
+
+/**
+ * Facade for the {{ PackageName }} package.
+ *
+ * @since   0.1.0
+ *
+ * @package {{ Namespace }}\Facades
+ */
+
+declare( strict_types=1 );
+
+namespace {{ Namespace }}\Facades;
+
+use Illuminate\Support\Facades\Facade;
+
+class {{ PackageName }} extends Facade
+{
+    protected static function getFacadeAccessor(): string
+    {
+        return '{{ package }}';
+    }
+}

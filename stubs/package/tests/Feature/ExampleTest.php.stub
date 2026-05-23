@@ -1,0 +1,7 @@
+<?php
+
+use {{ Namespace }}\{{ PackageName }};
+
+test( 'package can be resolved from the container', function (): void {
+    expect( app( '{{ package }}' ) )->toBeInstanceOf( {{ PackageName }}::class );
+} );
