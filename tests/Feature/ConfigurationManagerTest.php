@@ -220,3 +220,10 @@ test( 'the artisanpack_config helper reads package values via dot notation', fun
 	expect( artisanpack_config( 'media-library.max_file_size' ) )->toBe( 10240 );
 	expect( artisanpack_config( 'media-library.missing', 'default' ) )->toBe( 'default' );
 } );
+
+test( 'the artisanpack_config helper returns the default for malformed keys', function (): void {
+	expect( artisanpack_config( '', 'fallback' ) )->toBe( 'fallback' );
+	expect( artisanpack_config( 'media-library', 'fallback' ) )->toBe( 'fallback' );
+	expect( artisanpack_config( '.max_file_size', 'fallback' ) )->toBe( 'fallback' );
+	expect( artisanpack_config( 'media-library.', 'fallback' ) )->toBe( 'fallback' );
+} );
