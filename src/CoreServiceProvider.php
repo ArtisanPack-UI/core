@@ -2,9 +2,11 @@
 
 namespace ArtisanPackUI\Core;
 
+use ArtisanPackUI\Core\Commands\DiagnoseCommand;
 use ArtisanPackUI\Core\Commands\InstallPackagesCommand;
 use ArtisanPackUI\Core\Commands\ScaffoldConfigCommand;
 use ArtisanPackUI\Core\Config\ConfigurationManager;
+use ArtisanPackUI\Core\Diagnostics\DiagnosticRunner;
 use ArtisanPackUI\Core\Logging\LoggerFactory;
 use ArtisanPackUI\Core\View\BladeDirectiveRegistrar;
 use Illuminate\Contracts\Config\Repository;
@@ -36,6 +38,10 @@ class CoreServiceProvider extends ServiceProvider
         $this->app->singleton( BladeDirectiveRegistrar::class, function ( $app ) {
             return new BladeDirectiveRegistrar( $app->make( BladeCompiler::class ) );
         } );
+
+        $this->app->singleton( DiagnosticRunner::class, function ( $app ) {
+            return new DiagnosticRunner( $app );
+        } );
     }
 
     public function boot(): void
@@ -49,6 +55,7 @@ class CoreServiceProvider extends ServiceProvider
         $this->commands( [
             ScaffoldConfigCommand::class,
             InstallPackagesCommand::class,
+            DiagnoseCommand::class,
         ] );
     }
 }
