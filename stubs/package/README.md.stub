@@ -1,0 +1,23 @@
+# {{ PackageName }}
+
+`{{ vendor }}/{{ package }}` is part of the ArtisanPack UI ecosystem.
+
+## Installation
+
+```bash
+composer require {{ vendor }}/{{ package }}
+```
+
+## Usage
+
+TODO: Document the public API of this package.
+
+## Testing
+
+```bash
+composer test
+```
+
+## License
+
+MIT

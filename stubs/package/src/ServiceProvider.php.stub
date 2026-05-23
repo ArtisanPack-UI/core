@@ -1,0 +1,39 @@
+<?php
+
+/**
+ * Service provider for the {{ PackageName }} package.
+ *
+ * @since   1.0.0
+ *
+ * @package {{ Namespace }}
+ */
+
+declare( strict_types=1 );
+
+namespace {{ Namespace }};
+
+use Illuminate\Support\ServiceProvider;
+
+class {{ PackageName }}ServiceProvider extends ServiceProvider
+{
+    public function register(): void
+    {
+        $this->mergeConfigFrom(
+            __DIR__ . '/../config/{{ package }}.php',
+            '{{ package }}',
+        );
+
+        $this->app->singleton( '{{ package }}', function ( $app ) {
+            return new {{ PackageName }}();
+        } );
+    }
+
+    public function boot(): void
+    {
+        if ( $this->app->runningInConsole() ) {
+            $this->publishes( [
+                __DIR__ . '/../config/{{ package }}.php' => config_path( '{{ package }}.php' ),
+            ], '{{ package }}-config' );
+        }
+    }
+}

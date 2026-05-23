@@ -1,0 +1,14 @@
+# Contributing
+
+Thanks for your interest in contributing to `{{ vendor }}/{{ package }}`!
+
+## Running tests
+
+```bash
+composer install
+composer test
+```
+
+## Code style
+
+Run `composer fix` before submitting a pull request. The project also enforces a PHPCS standard via `composer lint`.

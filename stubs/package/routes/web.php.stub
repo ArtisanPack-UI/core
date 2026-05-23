@@ -1,0 +1,15 @@
+<?php
+
+/**
+ * Web routes for the {{ PackageName }} package.
+ *
+ * @since   1.0.0
+ *
+ * @package {{ Namespace }}
+ */
+
+use Illuminate\Support\Facades\Route;
+
+Route::prefix( '{{ package }}' )->group( function (): void {
+    // TODO: Define package routes here.
+} );

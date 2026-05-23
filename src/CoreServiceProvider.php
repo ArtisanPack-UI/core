@@ -6,6 +6,7 @@ use ArtisanPackUI\Core\Commands\CheckCompatibilityCommand;
 use ArtisanPackUI\Core\Commands\CheckUpdatesCommand;
 use ArtisanPackUI\Core\Commands\DiagnoseCommand;
 use ArtisanPackUI\Core\Commands\InstallPackagesCommand;
+use ArtisanPackUI\Core\Commands\MakePackageCommand;
 use ArtisanPackUI\Core\Commands\ScaffoldConfigCommand;
 use ArtisanPackUI\Core\Compatibility\CompatibilityChecker;
 use ArtisanPackUI\Core\Config\ConfigurationManager;
@@ -81,6 +82,7 @@ class CoreServiceProvider extends ServiceProvider
             DiagnoseCommand::class,
             CheckCompatibilityCommand::class,
             CheckUpdatesCommand::class,
+            MakePackageCommand::class,
         ] );
     }
 }

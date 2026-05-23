@@ -1,0 +1,4 @@
+<div>
+    {{-- {{ PackageName }} Livewire example component --}}
+    <p>{{ PackageName }} Livewire component is wired up.</p>
+</div>
