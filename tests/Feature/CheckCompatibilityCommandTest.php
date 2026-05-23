@@ -202,6 +202,26 @@ test( 'unknown package option fails fast with explicit error', function (): void
         ->assertExitCode( 1 );
 } );
 
+test( 'unknown package with --json emits a JSON error payload', function (): void {
+    $this->checker->setPackages( [
+        compatPackage( 'artisanpack-ui/core', '1.2.0' ),
+    ] );
+
+    $exitCode = Artisan::call( 'artisanpack:check-compatibility', [
+        '--package' => 'artisanpack-ui/nope',
+        '--json'    => true,
+    ] );
+    $output = Artisan::output();
+
+    expect( $exitCode )->toBe( 1 );
+
+    $decoded = json_decode( trim( $output ), true );
+
+    expect( $decoded )->toBeArray();
+    expect( $decoded )->toHaveKey( 'error' );
+    expect( $decoded['error'] )->toContain( 'artisanpack-ui/nope' );
+} );
+
 test( 'reports cleanly when no artisanpack-ui packages are installed', function (): void {
     $this->checker->setPackages( [] );
 

@@ -34,7 +34,13 @@ class CheckCompatibilityCommand extends Command
         $filter        = is_string( $packageOption ) && '' !== $packageOption ? $packageOption : null;
 
         if ( null !== $filter && ! $checker->packageIsInstalled( $filter ) ) {
-            $this->error( "Package '{$filter}' is not an installed ArtisanPack UI package." );
+            $message = "Package '{$filter}' is not an installed ArtisanPack UI package.";
+
+            if ( $this->option( 'json' ) ) {
+                $this->line( (string) json_encode( ['error' => $message], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
+            } else {
+                $this->error( $message );
+            }
 
             return self::FAILURE;
         }
