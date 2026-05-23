@@ -3,6 +3,7 @@
 namespace ArtisanPackUI\Core;
 
 use ArtisanPackUI\Core\Commands\CheckCompatibilityCommand;
+use ArtisanPackUI\Core\Commands\CheckUpdatesCommand;
 use ArtisanPackUI\Core\Commands\DiagnoseCommand;
 use ArtisanPackUI\Core\Commands\InstallPackagesCommand;
 use ArtisanPackUI\Core\Commands\ScaffoldConfigCommand;
@@ -10,9 +11,13 @@ use ArtisanPackUI\Core\Compatibility\CompatibilityChecker;
 use ArtisanPackUI\Core\Config\ConfigurationManager;
 use ArtisanPackUI\Core\Diagnostics\DiagnosticRunner;
 use ArtisanPackUI\Core\Logging\LoggerFactory;
+use ArtisanPackUI\Core\Updates\PackagistClient;
+use ArtisanPackUI\Core\Updates\UpdateChecker;
 use ArtisanPackUI\Core\View\BladeDirectiveRegistrar;
+use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\Http\Client\Factory as HttpFactory;
 use Illuminate\Log\LogManager;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\View\Compilers\BladeCompiler;
@@ -48,6 +53,18 @@ class CoreServiceProvider extends ServiceProvider
         $this->app->singleton( CompatibilityChecker::class, function ( $app ) {
             return new CompatibilityChecker( $app );
         } );
+
+        $this->app->singleton( PackagistClient::class, function ( $app ) {
+            return new PackagistClient(
+                $app->make( HttpFactory::class ),
+                $app->make( CacheRepository::class ),
+                $app->make( Repository::class ),
+            );
+        } );
+
+        $this->app->singleton( UpdateChecker::class, function ( $app ) {
+            return new UpdateChecker( $app->make( PackagistClient::class ) );
+        } );
     }
 
     public function boot(): void
@@ -63,6 +80,7 @@ class CoreServiceProvider extends ServiceProvider
             InstallPackagesCommand::class,
             DiagnoseCommand::class,
             CheckCompatibilityCommand::class,
+            CheckUpdatesCommand::class,
         ] );
     }
 }
