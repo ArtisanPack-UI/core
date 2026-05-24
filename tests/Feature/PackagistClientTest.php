@@ -3,6 +3,7 @@
 use ArtisanPackUI\Core\Updates\PackagistClient;
 use Illuminate\Cache\ArrayStore;
 use Illuminate\Cache\Repository as CacheRepository;
+use Illuminate\Contracts\Cache\Repository as CacheRepositoryContract;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Http\Client\Factory as HttpFactory;
 use Illuminate\Support\Facades\Cache;
@@ -216,20 +217,25 @@ test( 'falls back to put() to refresh TTL when touch() is not available', functi
         ['version' => '1.2.0'],
     ] ) );
 
-    $fallbackCache = new class( new ArrayStore() ) extends CacheRepository {
-        /** @var array<int, array{key: string, ttl: int|null}> */
-        public array $putCalls = [];
+    // Mockery mocks of the cache repository contract only declare interface
+    // methods, and the contract does not declare touch(). This gives us a
+    // version-independent way to exercise the L11/12 fallback path: under
+    // L13 the concrete Cache\Repository would inherit a real touch(), but a
+    // contract mock never does.
+    $fallbackCache = Mockery::mock( CacheRepositoryContract::class );
 
-        public function put( mixed $key, mixed $value, mixed $ttl = null ): bool
-        {
-            $this->putCalls[] = [
-                'key' => (string) $key,
-                'ttl' => $ttl,
-            ];
+    $fallbackCache->shouldReceive( 'get' )
+        ->with( 'artisanpack-ui:updates:artisanpack-ui/core' )
+        ->andReturn( null, [['version' => '1.2.0']] );
 
-            return parent::put( $key, $value, $ttl );
-        }
-    };
+    $fallbackCache->shouldReceive( 'put' )
+        ->twice()
+        ->with(
+            'artisanpack-ui:updates:artisanpack-ui/core',
+            Mockery::type( 'array' ),
+            3600,
+        )
+        ->andReturn( true );
 
     expect( method_exists( $fallbackCache, 'touch' ) )->toBeFalse();
 
@@ -242,11 +248,10 @@ test( 'falls back to put() to refresh TTL when touch() is not available', functi
     $client->getLatestRelease( 'artisanpack-ui/core' );
     $client->getLatestRelease( 'artisanpack-ui/core' );
 
-    // First put: cache miss writes the freshly-fetched releases.
-    // Second put: cache hit refreshes the TTL via the read-and-restore fallback.
-    expect( $fallbackCache->putCalls )->toHaveCount( 2 );
-    expect( $fallbackCache->putCalls[1]['ttl'] )->toBe( 3600 );
-
     // Only one HTTP call should have been made; the second was served from cache.
     Http::assertSentCount( 1 );
+} );
+
+afterEach( function (): void {
+    Mockery::close();
 } );
