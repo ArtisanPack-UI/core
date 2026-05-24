@@ -1,6 +1,10 @@
 <?php
 
 use ArtisanPackUI\Core\Updates\PackagistClient;
+use Illuminate\Cache\ArrayStore;
+use Illuminate\Cache\Repository as CacheRepository;
+use Illuminate\Contracts\Config\Repository as ConfigRepository;
+use Illuminate\Http\Client\Factory as HttpFactory;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 
@@ -107,4 +111,142 @@ test( 'forget clears the cache for a package', function (): void {
     $this->client->getLatestRelease( 'artisanpack-ui/core' );
 
     Http::assertSentCount( 2 );
+} );
+
+test( 'refreshes the cache TTL via touch() when the repository supports it', function (): void {
+    Http::fake( packagistFakeMap( 'artisanpack-ui/core', [
+        ['version' => '1.2.0'],
+    ] ) );
+
+    $touchableCache = new class( new ArrayStore() ) extends CacheRepository {
+        /** @var array<int, array{key: string, ttl: int|null}> */
+        public array $touchCalls = [];
+
+        /** @var array<int, array{key: string, ttl: int|null}> */
+        public array $putCalls = [];
+
+        public function touch( mixed $key, mixed $ttl = null ): bool
+        {
+            $this->touchCalls[] = [
+                'key' => (string) $key,
+                'ttl' => $ttl,
+            ];
+
+            return true;
+        }
+
+        public function put( mixed $key, mixed $value, mixed $ttl = null ): bool
+        {
+            $this->putCalls[] = [
+                'key' => (string) $key,
+                'ttl' => $ttl,
+            ];
+
+            return parent::put( $key, $value, $ttl );
+        }
+    };
+
+    $client = new PackagistClient(
+        $this->app->make( HttpFactory::class ),
+        $touchableCache,
+        $this->app->make( ConfigRepository::class ),
+    );
+
+    $client->getLatestRelease( 'artisanpack-ui/core' );
+    $client->getLatestRelease( 'artisanpack-ui/core' );
+
+    expect( $touchableCache->touchCalls )->toHaveCount( 1 );
+    expect( $touchableCache->touchCalls[0]['key'] )->toBe( 'artisanpack-ui:updates:artisanpack-ui/core' );
+    expect( $touchableCache->touchCalls[0]['ttl'] )->toBe( 3600 );
+
+    // put() is only called on the initial miss, not on the touch-supported hit.
+    expect( $touchableCache->putCalls )->toHaveCount( 1 );
+} );
+
+test( 'falls back to put() when touch() reports failure', function (): void {
+    Http::fake( packagistFakeMap( 'artisanpack-ui/core', [
+        ['version' => '1.2.0'],
+    ] ) );
+
+    $unreliableCache = new class( new ArrayStore() ) extends CacheRepository {
+        /** @var array<int, array{key: string, ttl: int|null}> */
+        public array $touchCalls = [];
+
+        /** @var array<int, array{key: string, ttl: int|null}> */
+        public array $putCalls = [];
+
+        public function touch( mixed $key, mixed $ttl = null ): bool
+        {
+            $this->touchCalls[] = [
+                'key' => (string) $key,
+                'ttl' => $ttl,
+            ];
+
+            return false;
+        }
+
+        public function put( mixed $key, mixed $value, mixed $ttl = null ): bool
+        {
+            $this->putCalls[] = [
+                'key' => (string) $key,
+                'ttl' => $ttl,
+            ];
+
+            return parent::put( $key, $value, $ttl );
+        }
+    };
+
+    $client = new PackagistClient(
+        $this->app->make( HttpFactory::class ),
+        $unreliableCache,
+        $this->app->make( ConfigRepository::class ),
+    );
+
+    $client->getLatestRelease( 'artisanpack-ui/core' );
+    $client->getLatestRelease( 'artisanpack-ui/core' );
+
+    // touch() was attempted but returned false, so the put() fallback ran.
+    expect( $unreliableCache->touchCalls )->toHaveCount( 1 );
+    expect( $unreliableCache->putCalls )->toHaveCount( 2 );
+    expect( $unreliableCache->putCalls[1]['ttl'] )->toBe( 3600 );
+} );
+
+test( 'falls back to put() to refresh TTL when touch() is not available', function (): void {
+    Http::fake( packagistFakeMap( 'artisanpack-ui/core', [
+        ['version' => '1.2.0'],
+    ] ) );
+
+    $fallbackCache = new class( new ArrayStore() ) extends CacheRepository {
+        /** @var array<int, array{key: string, ttl: int|null}> */
+        public array $putCalls = [];
+
+        public function put( mixed $key, mixed $value, mixed $ttl = null ): bool
+        {
+            $this->putCalls[] = [
+                'key' => (string) $key,
+                'ttl' => $ttl,
+            ];
+
+            return parent::put( $key, $value, $ttl );
+        }
+    };
+
+    expect( method_exists( $fallbackCache, 'touch' ) )->toBeFalse();
+
+    $client = new PackagistClient(
+        $this->app->make( HttpFactory::class ),
+        $fallbackCache,
+        $this->app->make( ConfigRepository::class ),
+    );
+
+    $client->getLatestRelease( 'artisanpack-ui/core' );
+    $client->getLatestRelease( 'artisanpack-ui/core' );
+
+    // First put: cache miss writes the freshly-fetched releases.
+    // Second put: cache hit refreshes the TTL via the read-and-restore fallback.
+    expect( $fallbackCache->putCalls )->toHaveCount( 2 );
+    expect( $fallbackCache->putCalls[1]['ttl'] )->toBe( 3600 );
+
+    // Only one HTTP call should have been made; the second was served from cache.
+    Http::assertSentCount( 1 );
 } );
