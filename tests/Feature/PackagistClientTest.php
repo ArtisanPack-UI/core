@@ -213,15 +213,21 @@ test( 'falls back to put() when touch() reports failure', function (): void {
 } );
 
 test( 'falls back to put() to refresh TTL when touch() is not available', function (): void {
+    // Laravel 13's Illuminate\Contracts\Cache\Repository interface declares
+    // touch() as part of the contract, so any conformant repository - including
+    // Mockery mocks of the contract - exposes touch(). The "cache lacks touch()"
+    // branch is therefore only reachable on Laravel 11/12. The touch path and
+    // the touch-returns-false path are covered by the tests above.
+    if ( artisanpack_supports_laravel_13() ) {
+        $this->markTestSkipped(
+            'Laravel 13+ requires touch() on the cache contract; the no-touch fallback is unreachable.',
+        );
+    }
+
     Http::fake( packagistFakeMap( 'artisanpack-ui/core', [
         ['version' => '1.2.0'],
     ] ) );
 
-    // Mockery mocks of the cache repository contract only declare interface
-    // methods, and the contract does not declare touch(). This gives us a
-    // version-independent way to exercise the L11/12 fallback path: under
-    // L13 the concrete Cache\Repository would inherit a real touch(), but a
-    // contract mock never does.
     $fallbackCache = Mockery::mock( CacheRepositoryContract::class );
 
     $fallbackCache->shouldReceive( 'get' )
