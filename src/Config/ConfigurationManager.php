@@ -163,7 +163,9 @@ class ConfigurationManager
 	 */
 	public function all(): array
 	{
-		return $this->config->get( self::NAMESPACE, [] );
+		$all = $this->config->get( self::NAMESPACE, [] );
+
+		return is_array( $all ) ? $all : [];
 	}
 
 	/**
@@ -177,7 +179,9 @@ class ConfigurationManager
 	 */
 	public function package( string $package ): array
 	{
-		return $this->config->get( $this->qualify( $package ), [] );
+		$packageConfig = $this->config->get( $this->qualify( $package ), [] );
+
+		return is_array( $packageConfig ) ? $packageConfig : [];
 	}
 
 	/**

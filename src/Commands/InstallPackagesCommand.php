@@ -155,7 +155,7 @@ class InstallPackagesCommand extends Command
         }
 
         // Confirm before proceeding
-        if ( ! confirm( __( 'Proceed with installation?' ), default: true ) ) {
+        if ( ! confirm( __( 'Proceed with installation?' ), true ) ) {
             $this->info( 'Installation cancelled.' );
 
             return self::SUCCESS;

@@ -167,7 +167,7 @@ class UpdateChecker
                 'source_url'      => $this->extractSourceUrl( $latest ),
             ];
 
-            if ( $minorOnly && 'major' === $type ) {
+            if ( $minorOnly && ! in_array( $type, ['minor', 'patch'], true ) ) {
                 continue;
             }
 

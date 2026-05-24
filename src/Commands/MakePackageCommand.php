@@ -167,7 +167,19 @@ class MakePackageCommand extends Command
      */
     protected function resolveTargetPath( string $package ): string
     {
-        $path = (string) ( $this->option( 'path' ) ?: ( getcwd() . DIRECTORY_SEPARATOR . $package ) );
+        $option = $this->option( 'path' );
+
+        if ( null === $option || '' === $option ) {
+            $cwd = getcwd();
+
+            if ( false === $cwd ) {
+                throw new RuntimeException( 'Unable to determine the current working directory.' );
+            }
+
+            $path = $cwd . DIRECTORY_SEPARATOR . $package;
+        } else {
+            $path = (string) $option;
+        }
 
         if ( DIRECTORY_SEPARATOR === $path || 1 === preg_match( '/^[A-Za-z]:\\\\$/', $path ) ) {
             return $path;

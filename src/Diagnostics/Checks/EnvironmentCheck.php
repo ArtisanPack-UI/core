@@ -13,6 +13,10 @@
 
 namespace ArtisanPackUI\Core\Diagnostics\Checks;
 
+// PHP requires the lowercase __construct magic method; the
+// MagicMethodNotUppercase sniff misfires on the constructor here.
+// phpcs:disable ArtisanPackUI.TypeHints.TypeDeclaration.MagicMethodNotUppercase
+
 use ArtisanPackUI\Core\Diagnostics\DiagnosticResult;
 use ArtisanPackUI\Core\Diagnostics\DiagnosticStatus;
 use ArtisanPackUI\Core\Diagnostics\Support\ComposerLock;
@@ -109,7 +113,10 @@ class EnvironmentCheck implements DiagnosticCheck
                 ? DiagnosticStatus::Pass
                 : DiagnosticStatus::Error,
             message: 'minimum: ' . self::MIN_PHP_VERSION,
-            details: ['current' => $phpVersion, 'minimum' => self::MIN_PHP_VERSION],
+            details: [
+                'current' => $phpVersion,
+                'minimum' => self::MIN_PHP_VERSION,
+            ],
         );
 
         $laravelVersion = $this->app->version();
@@ -119,7 +126,10 @@ class EnvironmentCheck implements DiagnosticCheck
                 ? DiagnosticStatus::Pass
                 : DiagnosticStatus::Error,
             message: 'minimum: ' . self::MIN_LARAVEL_VERSION,
-            details: ['current' => $laravelVersion, 'minimum' => self::MIN_LARAVEL_VERSION],
+            details: [
+                'current' => $laravelVersion,
+                'minimum' => self::MIN_LARAVEL_VERSION,
+            ],
         );
 
         $livewireVersion = $this->detectInstalledVersion( 'livewire/livewire' );

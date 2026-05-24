@@ -47,7 +47,7 @@ return [
 		'logging' => [
 			'channel' => env( 'ARTISANPACK_LOG_CHANNEL' ),
 			'audit'   => [
-				'enabled' => true,
+				'enabled' => env( 'ARTISANPACK_AUDIT_ENABLED', true ),
 			],
 		],
 

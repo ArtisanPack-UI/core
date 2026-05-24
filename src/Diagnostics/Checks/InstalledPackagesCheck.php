@@ -83,14 +83,21 @@ class InstalledPackagesCheck implements DiagnosticCheck
                 $results[] = new DiagnosticResult(
                     label: "{$package}: {$version}",
                     status: DiagnosticStatus::Pass,
-                    details: ['package' => $package, 'version' => $version, 'installed' => true],
+                    details: [
+                        'package'   => $package,
+                        'version'   => $version,
+                        'installed' => true,
+                    ],
                 );
             } else {
                 $results[] = new DiagnosticResult(
                     label: "{$package}: not installed",
                     status: DiagnosticStatus::Info,
                     message: 'optional package',
-                    details: ['package' => $package, 'installed' => false],
+                    details: [
+                        'package'   => $package,
+                        'installed' => false,
+                    ],
                 );
             }
         }

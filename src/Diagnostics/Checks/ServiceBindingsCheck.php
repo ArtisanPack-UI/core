@@ -13,6 +13,10 @@
 
 namespace ArtisanPackUI\Core\Diagnostics\Checks;
 
+// PHP requires the lowercase __construct magic method; the
+// MagicMethodNotUppercase sniff misfires on the constructor here.
+// phpcs:disable ArtisanPackUI.TypeHints.TypeDeclaration.MagicMethodNotUppercase
+
 use ArtisanPackUI\Core\Diagnostics\DiagnosticResult;
 use ArtisanPackUI\Core\Diagnostics\DiagnosticStatus;
 use Illuminate\Contracts\Foundation\Application;

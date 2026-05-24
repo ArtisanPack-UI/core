@@ -73,7 +73,16 @@ class DiagnoseCommand extends Command
         $only          = is_string( $packageOption ) ? $packageOption : null;
 
         if ( null !== $only && ! $this->checkExists( $runner, $only ) ) {
-            $this->error( "Unknown package check id: '{$only}'. Available ids: " . implode( ', ', $this->availableCheckIds( $runner ) ) . '.' );
+            $message = "Unknown package check id: '{$only}'. Available ids: "
+                . implode( ', ', $this->availableCheckIds( $runner ) ) . '.';
+
+            if ( $this->option( 'json' ) ) {
+                $this->line(
+                    (string) json_encode( ['error' => $message], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ),
+                );
+            } else {
+                $this->error( $message );
+            }
 
             return self::FAILURE;
         }

@@ -14,6 +14,10 @@
 
 namespace ArtisanPackUI\Core\Diagnostics\Checks;
 
+// PHP requires the lowercase __construct magic method; the
+// MagicMethodNotUppercase sniff misfires on the constructor here.
+// phpcs:disable ArtisanPackUI.TypeHints.TypeDeclaration.MagicMethodNotUppercase
+
 use ArtisanPackUI\Core\Diagnostics\DiagnosticResult;
 use ArtisanPackUI\Core\Diagnostics\DiagnosticStatus;
 use ArtisanPackUI\Core\Diagnostics\Support\ComposerLock;
@@ -75,7 +79,11 @@ class ConfigurationCheck implements DiagnosticCheck
                 label: 'config/artisanpack.php exists',
                 status: DiagnosticStatus::Error,
                 message: 'Run php artisan artisanpack:scaffold-config to publish it.',
-                details: ['path' => $configPath, 'exists' => false, 'fixable' => true],
+                details: [
+                    'path'    => $configPath,
+                    'exists'  => false,
+                    'fixable' => true,
+                ],
             );
 
             return $results;
@@ -84,7 +92,10 @@ class ConfigurationCheck implements DiagnosticCheck
         $results[] = new DiagnosticResult(
             label: 'config/artisanpack.php exists',
             status: DiagnosticStatus::Pass,
-            details: ['path' => $configPath, 'exists' => true],
+            details: [
+                'path'   => $configPath,
+                'exists' => true,
+            ],
         );
 
         $config              = $this->app['config']->get( 'artisanpack', [] );
@@ -106,7 +117,10 @@ class ConfigurationCheck implements DiagnosticCheck
                     label: "Missing configuration for installed package: {$packageKey}",
                     status: DiagnosticStatus::Warning,
                     message: 'Run php artisan artisanpack:scaffold-config to add it.',
-                    details: ['package_key' => $packageKey, 'fixable' => true],
+                    details: [
+                        'package_key' => $packageKey,
+                        'fixable'     => true,
+                    ],
                 );
             }
         }

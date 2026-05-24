@@ -20,6 +20,7 @@ use ArtisanPackUI\Core\Diagnostics\Checks\EnvironmentCheck;
 use ArtisanPackUI\Core\Diagnostics\Checks\InstalledPackagesCheck;
 use ArtisanPackUI\Core\Diagnostics\Checks\ServiceBindingsCheck;
 use Illuminate\Contracts\Foundation\Application;
+use Throwable;
 
 /**
  * Orchestrates execution of the registered {@see DiagnosticCheck} suite and
@@ -106,9 +107,25 @@ class DiagnosticRunner
                 continue;
             }
 
+            try {
+                $results = $check->run();
+            } catch ( Throwable $exception ) {
+                $results = [
+                    new DiagnosticResult(
+                        label: $check->name() . ': check threw an exception',
+                        status: DiagnosticStatus::Error,
+                        message: $exception->getMessage(),
+                        details: [
+                            'check'     => $check->id(),
+                            'exception' => $exception::class,
+                        ],
+                    ),
+                ];
+            }
+
             $sections[] = [
                 'check'   => $check,
-                'results' => $check->run(),
+                'results' => $results,
             ];
         }
 

@@ -27,7 +27,7 @@
 * PHP 8.2+ remains the minimum requirement. Laravel 13 requires PHP 8.3+, so PHP 8.2 users continue to receive Laravel 11/12, while Laravel 13 is only selectable on PHP 8.3+ (enforced by Laravel's own PHP constraint).
 * No public API was removed. Every Core 1.1 application continues to work after upgrading to 1.2 with no other changes required. Migration to the new services ( `ArtisanPackServiceProvider`, `ConfigurationManager`, `ArtisanPackLog`, `ArtisanPackTestCase` ) is opt-in. See `UPGRADE.md` for the full migration guide.
 
-## [1.1.0] - 2025-01-09
+## [1.1.0] - 2026-01-09
 
 ### Breaking Changes
 

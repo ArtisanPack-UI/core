@@ -57,7 +57,7 @@ The `CoreServiceProvider` is not loaded. Likely causes:
 
 ## "Property type missing" lint errors in commands
 
-The `$signature` and `$description` properties on Laravel's `Command` base class don't carry type declarations, so PHPCS flags them as missing. These warnings exist in the baseline and are not introduced by your changes. Either leave them as-is or add property type declarations.
+The `$signature` and `$description` properties on Laravel's `Command` base class are declared **untyped** (only `@var string` docblocks). PHP's inheritance rules forbid a child class from adding a type declaration to a property the parent leaves untyped — doing so fails with `Type of …::$signature must not be defined (as in class …)`. Leave these properties untyped in your command subclasses; the PHPCS warning is a known false-positive for Laravel Command subclasses.
 
 ## Tests fail with "class CoreServiceProvider not found"
 

@@ -12,28 +12,43 @@ declare( strict_types=1 );
 
 namespace {{ Namespace }};
 
-use Illuminate\Support\ServiceProvider;
+use ArtisanPackUI\Core\ArtisanPackServiceProvider;
 
-class {{ PackageName }}ServiceProvider extends ServiceProvider
+class {{ PackageName }}ServiceProvider extends ArtisanPackServiceProvider
 {
-    public function register(): void
-    {
-        $this->mergeConfigFrom(
-            __DIR__ . '/../config/{{ package }}.php',
-            '{{ package }}',
-        );
+    /**
+     * Absolute path to the package configuration file to merge and publish.
+     */
+    protected ?string $configFile = __DIR__ . '/../config/{{ package }}.php';
 
-        $this->app->singleton( '{{ package }}', function ( $app ) {
-            return new {{ PackageName }}();
-        } );
-    }
+    /**
+     * Configuration key the package config is merged under.
+     */
+    protected ?string $configKey = 'artisanpack.{{ package }}';
 
-    public function boot(): void
+    /**
+     * Publish tag used when publishing the configuration file.
+     */
+    protected ?string $configPublishTag = '{{ package }}-config';
+
+    /**
+     * Container singletons to register, keyed by abstract.
+     *
+     * @var array<int|string, callable|class-string>
+     */
+    protected array $singletons = [
+        '{{ package }}' => {{ PackageName }}::class,
+    ];
+
+    /**
+     * Register any bindings unique to the package.
+     *
+     * Override this method when the package needs container bindings that
+     * don't fit the {@see $singletons} array — interface-to-implementation
+     * contracts, scoped bindings, conditional bindings, and similar.
+     */
+    protected function registerPackageBindings(): void
     {
-        if ( $this->app->runningInConsole() ) {
-            $this->publishes( [
-                __DIR__ . '/../config/{{ package }}.php' => config_path( '{{ package }}.php' ),
-            ], '{{ package }}-config' );
-        }
+        //
     }
 }

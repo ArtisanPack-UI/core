@@ -34,7 +34,7 @@ class ScaffoldConfigCommand extends Command
 	 *
 	 * @var string
 	 */
-	protected $description = 'Scaffolds the artisanpack.php config file with default settings from all installed ArtisanPack UI packages.';
+	protected $description = 'Scaffold artisanpack.php with default settings from installed ArtisanPack UI packages.';
 
 	/**
 	 * Execute the console command.

@@ -13,6 +13,10 @@
 
 namespace ArtisanPackUI\Core\Exceptions;
 
+// PHP requires the lowercase __construct magic method; the
+// MagicMethodNotUppercase sniff misfires on the constructor here.
+// phpcs:disable ArtisanPackUI.TypeHints.TypeDeclaration.MagicMethodNotUppercase
+
 use Exception;
 use Throwable;
 

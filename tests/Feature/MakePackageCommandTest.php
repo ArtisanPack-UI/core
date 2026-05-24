@@ -6,7 +6,12 @@ use Illuminate\Support\Facades\File;
 
 function makePackageTargetPath( string $package ): string
 {
-    return sys_get_temp_dir() . '/artisanpack-make-package-' . bin2hex( random_bytes( 4 ) ) . '/' . $package;
+    return sprintf(
+        '%s/artisanpack-make-package-%s/%s',
+        sys_get_temp_dir(),
+        bin2hex( random_bytes( 4 ) ),
+        $package,
+    );
 }
 
 beforeEach( function (): void {
@@ -98,7 +103,8 @@ test( 'scaffolded service provider uses the resolved namespace', function (): vo
     $contents = File::get( $this->targetPath . '/src/NewPackageServiceProvider.php' );
 
     expect( $contents )->toContain( 'namespace ArtisanPackUI\\NewPackage;' );
-    expect( $contents )->toContain( 'class NewPackageServiceProvider extends ServiceProvider' );
+    expect( $contents )->toContain( 'class NewPackageServiceProvider extends ArtisanPackServiceProvider' );
+    expect( $contents )->toContain( 'use ArtisanPackUI\\Core\\ArtisanPackServiceProvider;' );
 } );
 
 test( 'optional flags scaffold their respective directories', function (): void {

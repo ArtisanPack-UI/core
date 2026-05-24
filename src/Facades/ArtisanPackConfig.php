@@ -16,7 +16,6 @@ namespace ArtisanPackUI\Core\Facades;
 use ArtisanPackUI\Core\Config\ConfigurationManager;
 use ArtisanPackUI\Core\Config\ConfigurationSchema;
 use ArtisanPackUI\Core\Config\ValidationResult;
-use Illuminate\Support\Facades\Facade;
 
 /**
  * Provides static access to the {@see ConfigurationManager} singleton.
@@ -37,7 +36,7 @@ use Illuminate\Support\Facades\Facade;
  * @see ConfigurationManager
  * @since      1.2.0
  */
-class ArtisanPackConfig extends Facade
+class ArtisanPackConfig extends ArtisanPackFacade
 {
 	/**
 	 * Get the registered name of the component.

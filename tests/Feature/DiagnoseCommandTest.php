@@ -15,6 +15,7 @@ function fakeCheck(
     bool $fixReturns = true,
 ): DiagnosticCheck {
     return new class( $id, $name, $status, $supportsFix, $fixReturns ) implements DiagnosticCheck {
+        // phpcs:disable ArtisanPackUI.TypeHints.TypeDeclaration.MagicMethodNotUppercase
         public function __construct(
             private string $id,
             private string $name,
@@ -24,6 +25,7 @@ function fakeCheck(
             public int $fixCallCount = 0,
         ) {
         }
+        // phpcs:enable ArtisanPackUI.TypeHints.TypeDeclaration.MagicMethodNotUppercase
 
         public function id(): string
         {
@@ -176,7 +178,10 @@ test( 'fix option with package restricts fixes', function (): void {
 
     $this->runner->setChecks( [$fixableA, $fixableB] );
 
-    $this->artisan( 'artisanpack:diagnose', ['--fix' => true, '--package' => 'b'] )
+    $this->artisan( 'artisanpack:diagnose', [
+        '--fix'     => true,
+        '--package' => 'b',
+    ] )
         ->expectsOutputToContain( 'Attempting to fix: B' )
         ->doesntExpectOutputToContain( 'Attempting to fix: A' )
         ->assertExitCode( 0 );
@@ -203,7 +208,10 @@ test( 'verbose flag prints result details', function (): void {
                 new DiagnosticResult(
                     label: 'PHP Version',
                     status: DiagnosticStatus::Pass,
-                    details: ['current' => '8.4.3', 'minimum' => '8.2.0'],
+                    details: [
+                        'current' => '8.4.3',
+                        'minimum' => '8.2.0',
+                    ],
                 ),
             ];
         }
