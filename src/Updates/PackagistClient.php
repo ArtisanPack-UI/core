@@ -29,6 +29,14 @@ class PackagistClient
     /**
      * Fetch the full set of stable releases for a package, newest first.
      *
+     * On a cache hit, refresh the entry's TTL so frequently-checked packages
+     * keep their cached releases warm. Laravel 13 added Cache::touch() which
+     * extends the TTL without re-reading and re-storing the payload; on
+     * Laravel 11/12 we fall back to a put() with the existing value. The
+     * adoption is guarded by a method_exists() feature check rather than a
+     * Laravel-version check so that custom cache repositories which already
+     * expose touch() benefit on older framework versions too.
+     *
      * @return array<int, array<string, mixed>>
      */
     public function getReleases( string $package ): array
@@ -36,9 +44,19 @@ class PackagistClient
         $ttl = (int) $this->config->get( 'artisanpack.core.updates.cache_ttl', 3600 );
         $key = self::CACHE_PREFIX . $package;
 
-        return $this->cache->remember( $key, $ttl, function () use ( $package ): array {
-            return $this->fetchReleases( $package );
-        } );
+        $cached = $this->cache->get( $key );
+
+        if ( is_array( $cached ) ) {
+            $this->refreshCacheTtl( $key, $ttl, $cached );
+
+            return $cached;
+        }
+
+        $releases = $this->fetchReleases( $package );
+
+        $this->cache->put( $key, $releases, $ttl );
+
+        return $releases;
     }
 
     /**
@@ -59,6 +77,27 @@ class PackagistClient
     public function forget( string $package ): void
     {
         $this->cache->forget( self::CACHE_PREFIX . $package );
+    }
+
+    /**
+     * Extend the TTL of an existing cache entry.
+     *
+     * Uses Cache::touch() when the underlying repository supports it
+     * ( Laravel 13+ or a custom repository that polyfills the method ) so the
+     * cached payload does not need to be re-serialised. Falls back to a
+     * standard put() on Laravel 11/12, and also when touch() reports failure
+     * - this can happen if the entry expired between the get() above and the
+     * touch() call here.
+     *
+     * @param  array<int, array<string, mixed>>  $cached
+     */
+    protected function refreshCacheTtl( string $key, int $ttl, array $cached ): void
+    {
+        if ( method_exists( $this->cache, 'touch' ) && true === $this->cache->touch( $key, $ttl ) ) {
+            return;
+        }
+
+        $this->cache->put( $key, $cached, $ttl );
     }
 
     /**

@@ -1,6 +1,11 @@
 <?php
 
 use ArtisanPackUI\Core\Updates\PackagistClient;
+use Illuminate\Cache\ArrayStore;
+use Illuminate\Cache\Repository as CacheRepository;
+use Illuminate\Contracts\Cache\Repository as CacheRepositoryContract;
+use Illuminate\Contracts\Config\Repository as ConfigRepository;
+use Illuminate\Http\Client\Factory as HttpFactory;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 
@@ -107,4 +112,152 @@ test( 'forget clears the cache for a package', function (): void {
     $this->client->getLatestRelease( 'artisanpack-ui/core' );
 
     Http::assertSentCount( 2 );
+} );
+
+test( 'refreshes the cache TTL via touch() when the repository supports it', function (): void {
+    Http::fake( packagistFakeMap( 'artisanpack-ui/core', [
+        ['version' => '1.2.0'],
+    ] ) );
+
+    $touchableCache = new class( new ArrayStore() ) extends CacheRepository {
+        /** @var array<int, array{key: string, ttl: int|null}> */
+        public array $touchCalls = [];
+
+        /** @var array<int, array{key: string, ttl: int|null}> */
+        public array $putCalls = [];
+
+        public function touch( mixed $key, mixed $ttl = null ): bool
+        {
+            $this->touchCalls[] = [
+                'key' => (string) $key,
+                'ttl' => $ttl,
+            ];
+
+            return true;
+        }
+
+        public function put( mixed $key, mixed $value, mixed $ttl = null ): bool
+        {
+            $this->putCalls[] = [
+                'key' => (string) $key,
+                'ttl' => $ttl,
+            ];
+
+            return parent::put( $key, $value, $ttl );
+        }
+    };
+
+    $client = new PackagistClient(
+        $this->app->make( HttpFactory::class ),
+        $touchableCache,
+        $this->app->make( ConfigRepository::class ),
+    );
+
+    $client->getLatestRelease( 'artisanpack-ui/core' );
+    $client->getLatestRelease( 'artisanpack-ui/core' );
+
+    expect( $touchableCache->touchCalls )->toHaveCount( 1 );
+    expect( $touchableCache->touchCalls[0]['key'] )->toBe( 'artisanpack-ui:updates:artisanpack-ui/core' );
+    expect( $touchableCache->touchCalls[0]['ttl'] )->toBe( 3600 );
+
+    // put() is only called on the initial miss, not on the touch-supported hit.
+    expect( $touchableCache->putCalls )->toHaveCount( 1 );
+} );
+
+test( 'falls back to put() when touch() reports failure', function (): void {
+    Http::fake( packagistFakeMap( 'artisanpack-ui/core', [
+        ['version' => '1.2.0'],
+    ] ) );
+
+    $unreliableCache = new class( new ArrayStore() ) extends CacheRepository {
+        /** @var array<int, array{key: string, ttl: int|null}> */
+        public array $touchCalls = [];
+
+        /** @var array<int, array{key: string, ttl: int|null}> */
+        public array $putCalls = [];
+
+        public function touch( mixed $key, mixed $ttl = null ): bool
+        {
+            $this->touchCalls[] = [
+                'key' => (string) $key,
+                'ttl' => $ttl,
+            ];
+
+            return false;
+        }
+
+        public function put( mixed $key, mixed $value, mixed $ttl = null ): bool
+        {
+            $this->putCalls[] = [
+                'key' => (string) $key,
+                'ttl' => $ttl,
+            ];
+
+            return parent::put( $key, $value, $ttl );
+        }
+    };
+
+    $client = new PackagistClient(
+        $this->app->make( HttpFactory::class ),
+        $unreliableCache,
+        $this->app->make( ConfigRepository::class ),
+    );
+
+    $client->getLatestRelease( 'artisanpack-ui/core' );
+    $client->getLatestRelease( 'artisanpack-ui/core' );
+
+    // touch() was attempted but returned false, so the put() fallback ran.
+    expect( $unreliableCache->touchCalls )->toHaveCount( 1 );
+    expect( $unreliableCache->putCalls )->toHaveCount( 2 );
+    expect( $unreliableCache->putCalls[1]['ttl'] )->toBe( 3600 );
+} );
+
+test( 'falls back to put() to refresh TTL when touch() is not available', function (): void {
+    // Laravel 13's Illuminate\Contracts\Cache\Repository interface declares
+    // touch() as part of the contract, so any conformant repository - including
+    // Mockery mocks of the contract - exposes touch(). The "cache lacks touch()"
+    // branch is therefore only reachable on Laravel 11/12. The touch path and
+    // the touch-returns-false path are covered by the tests above.
+    if ( artisanpack_supports_laravel_13() ) {
+        $this->markTestSkipped(
+            'Laravel 13+ requires touch() on the cache contract; the no-touch fallback is unreachable.',
+        );
+    }
+
+    Http::fake( packagistFakeMap( 'artisanpack-ui/core', [
+        ['version' => '1.2.0'],
+    ] ) );
+
+    $fallbackCache = Mockery::mock( CacheRepositoryContract::class );
+
+    $fallbackCache->shouldReceive( 'get' )
+        ->with( 'artisanpack-ui:updates:artisanpack-ui/core' )
+        ->andReturn( null, [['version' => '1.2.0']] );
+
+    $fallbackCache->shouldReceive( 'put' )
+        ->twice()
+        ->with(
+            'artisanpack-ui:updates:artisanpack-ui/core',
+            Mockery::type( 'array' ),
+            3600,
+        )
+        ->andReturn( true );
+
+    expect( method_exists( $fallbackCache, 'touch' ) )->toBeFalse();
+
+    $client = new PackagistClient(
+        $this->app->make( HttpFactory::class ),
+        $fallbackCache,
+        $this->app->make( ConfigRepository::class ),
+    );
+
+    $client->getLatestRelease( 'artisanpack-ui/core' );
+    $client->getLatestRelease( 'artisanpack-ui/core' );
+
+    // Only one HTTP call should have been made; the second was served from cache.
+    Http::assertSentCount( 1 );
+} );
+
+afterEach( function (): void {
+    Mockery::close();
 } );

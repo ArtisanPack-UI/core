@@ -75,6 +75,34 @@ if ( ! function_exists( 'artisanpack_blade' ) ) {
 	}
 }
 
+if ( ! function_exists( 'artisanpack_supports_laravel_13' ) ) {
+	/**
+	 * Determines whether the current Laravel runtime is Laravel 13.0 or newer.
+	 *
+	 * ArtisanPack UI Core keeps supporting Laravel 11 and 12, so any Laravel 13
+	 * only API must be guarded behind a runtime check. This helper centralises
+	 * that check so consumers do not have to compare framework versions inline.
+	 *
+	 * Prefer feature detection ( e.g. `method_exists()` ) for individual APIs
+	 * when possible; use this helper when the gate is broader than a single
+	 * method ( such as documenting that an entire block targets Laravel 13 ).
+	 *
+	 * @since 1.2.0
+	 *
+	 * @return bool True when running Laravel 13.0 or newer, false otherwise.
+	 */
+	// Global helpers follow Laravel's snake_case convention ( e.g. config() ).
+	// phpcs:ignore ArtisanPackUI.NamingConventions.NamingConventions.NotCamelCase
+	function artisanpack_supports_laravel_13(): bool
+	{
+		if ( ! class_exists( Illuminate\Foundation\Application::class ) ) {
+			return false;
+		}
+
+		return version_compare( Illuminate\Foundation\Application::VERSION, '13.0.0', '>=' );
+	}
+}
+
 if ( ! function_exists( 'getToastDuration' ) ) {
 	/**
 	 * Gets the configured duration for toast notifications.
