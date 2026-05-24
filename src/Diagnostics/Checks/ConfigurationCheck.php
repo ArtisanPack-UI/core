@@ -4,7 +4,12 @@
  * Verifies the unified ArtisanPack UI configuration file exists and has entries
  * matching the installed packages.
  *
- * @since 1.2.0
+ * @package    ArtisanPack_UI
+ * @subpackage Core\Diagnostics\Checks
+ *
+ * @author     Jacob Martella <me@jacobmartella.com>
+ *
+ * @since      1.2.0
  */
 
 namespace ArtisanPackUI\Core\Diagnostics\Checks;
@@ -15,22 +20,51 @@ use ArtisanPackUI\Core\Diagnostics\Support\ComposerLock;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Str;
 
+/**
+ * Diagnostic check that confirms the unified `config/artisanpack.php` exists
+ * and contains a section for every installed ArtisanPack UI package.
+ *
+ * Supports auto-fix: when the configuration file is missing or out of date the
+ * check can invoke `artisanpack:scaffold-config` to repair it without manual
+ * intervention.
+ *
+ * @package    ArtisanPack_UI
+ * @subpackage Core\Diagnostics\Checks
+ *
+ * @since      1.2.0
+ */
 class ConfigurationCheck implements DiagnosticCheck
 {
+    /**
+     * Create a new configuration check.
+     *
+     * @since 1.2.0
+     *
+     * @param  Application  $app  The Laravel application used to read the config repository.
+     */
     public function __construct( protected Application $app )
     {
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function id(): string
     {
         return 'configuration';
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function name(): string
     {
         return 'Configuration';
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function run(): array
     {
         $results    = [];
@@ -88,11 +122,17 @@ class ConfigurationCheck implements DiagnosticCheck
         return $results;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function supportsFix(): bool
     {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function fix( callable $writer ): bool
     {
         $configPath = config_path( 'artisanpack.php' );
@@ -124,7 +164,9 @@ class ConfigurationCheck implements DiagnosticCheck
     /**
      * Build the kebab-case package keys we'd expect to find in the config.
      *
-     * @return array<int, string>
+     * @since 1.2.0
+     *
+     * @return array<int, string> The expected config keys for installed packages.
      */
     protected function installedPackageKeys(): array
     {

@@ -3,9 +3,12 @@
 /**
  * Enum of ArtisanPack UI packages.
  *
- * @since      1.2.0
+ * @package    ArtisanPack_UI
+ * @subpackage Core\Enums
  *
- * @package    ArtisanPackUI\Core\Enums
+ * @author     Jacob Martella <me@jacobmartella.com>
+ *
+ * @since      1.2.0
  */
 
 namespace ArtisanPackUI\Core\Enums;
@@ -19,9 +22,10 @@ namespace ArtisanPackUI\Core\Enums;
  * no runtime configuration and therefore have no configuration key to resolve.
  * Their identifiers remain available as constants on {@see \ArtisanPackUI\Core\Constants}.
  *
- * @since 1.2.0
+ * @package    ArtisanPack_UI
+ * @subpackage Core\Enums
  *
- * @package ArtisanPackUI\Core\Enums
+ * @since      1.2.0
  */
 enum Package: string
 {

@@ -3,9 +3,12 @@
 /**
  * Enum of log severity levels.
  *
- * @since      1.2.0
+ * @package    ArtisanPack_UI
+ * @subpackage Core\Enums
  *
- * @package    ArtisanPackUI\Core\Enums
+ * @author     Jacob Martella <me@jacobmartella.com>
+ *
+ * @since      1.2.0
  */
 
 namespace ArtisanPackUI\Core\Enums;
@@ -14,9 +17,10 @@ namespace ArtisanPackUI\Core\Enums;
  * Represents the standard log severity levels used across the ArtisanPack UI
  * ecosystem.
  *
- * @since 1.2.0
+ * @package    ArtisanPack_UI
+ * @subpackage Core\Enums
  *
- * @package ArtisanPackUI\Core\Enums
+ * @since      1.2.0
  */
 enum LogLevel: string
 {

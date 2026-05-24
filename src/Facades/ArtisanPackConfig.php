@@ -3,9 +3,12 @@
 /**
  * Facade for the unified ArtisanPack UI configuration manager.
  *
- * @since      1.2.0
+ * @package    ArtisanPack_UI
+ * @subpackage Core\Facades
  *
- * @package    ArtisanPackUI\Core\Facades
+ * @author     Jacob Martella <me@jacobmartella.com>
+ *
+ * @since      1.2.0
  */
 
 namespace ArtisanPackUI\Core\Facades;
@@ -18,6 +21,9 @@ use Illuminate\Support\Facades\Facade;
 /**
  * Provides static access to the {@see ConfigurationManager} singleton.
  *
+ * @package    ArtisanPack_UI
+ * @subpackage Core\Facades
+ *
  * @method static mixed get( string $package, string $key, mixed $default = null )
  * @method static void set( string $package, string $key, mixed $value )
  * @method static bool has( string $package, string $key )
@@ -29,9 +35,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static ConfigurationSchema|null schema( string $package )
  *
  * @see ConfigurationManager
- * @since 1.2.0
- *
- * @package ArtisanPackUI\Core\Facades
+ * @since      1.2.0
  */
 class ArtisanPackConfig extends Facade
 {

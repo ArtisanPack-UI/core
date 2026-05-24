@@ -3,6 +3,11 @@
 /**
  * Artisan command to install ArtisanPack UI packages interactively.
  *
+ * @package    ArtisanPack_UI
+ * @subpackage Core\Commands
+ *
+ * @author     Jacob Martella <me@jacobmartella.com>
+ *
  * @since      1.1.0
  */
 

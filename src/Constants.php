@@ -3,9 +3,12 @@
 /**
  * Centralized constants shared across the ArtisanPack UI ecosystem.
  *
- * @since      1.2.0
+ * @package    ArtisanPack_UI
+ * @subpackage Core
  *
- * @package    ArtisanPackUI\Core
+ * @author     Jacob Martella <me@jacobmartella.com>
+ *
+ * @since      1.2.0
  */
 
 namespace ArtisanPackUI\Core;
@@ -15,9 +18,10 @@ namespace ArtisanPackUI\Core;
  * keys, common default values, and version requirements used throughout the
  * ArtisanPack UI packages.
  *
- * @since 1.2.0
+ * @package    ArtisanPack_UI
+ * @subpackage Core
  *
- * @package ArtisanPackUI\Core
+ * @since      1.2.0
  */
 final class Constants
 {

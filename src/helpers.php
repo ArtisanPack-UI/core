@@ -10,9 +10,12 @@
  * a11yCheckContrastColor, generateAccessibleTextColor) are provided by the
  * artisanpack-ui/accessibility package. Install that package if you need those functions.
  *
- * @since   1.0.0
+ * @package    ArtisanPack_UI
+ * @subpackage Core
  *
- * @package ArtisanPackUI\Core
+ * @author     Jacob Martella <me@jacobmartella.com>
+ *
+ * @since      1.0.0
  */
 
 if ( ! function_exists( 'artisanpack_config' ) ) {

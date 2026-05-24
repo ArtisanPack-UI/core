@@ -3,7 +3,12 @@
 /**
  * Artisan command that produces a health report for the ArtisanPack UI installation.
  *
- * @since 1.2.0
+ * @package    ArtisanPack_UI
+ * @subpackage Core\Commands
+ *
+ * @author     Jacob Martella <me@jacobmartella.com>
+ *
+ * @since      1.2.0
  */
 
 namespace ArtisanPackUI\Core\Commands;
@@ -15,10 +20,28 @@ use ArtisanPackUI\Core\Diagnostics\DiagnosticStatus;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Attribute\AsCommand;
 
+/**
+ * `artisanpack:diagnose` command — executes the {@see DiagnosticRunner} and
+ * prints the resulting {@see DiagnosticReport} in either human-readable or
+ * JSON form.
+ *
+ * Supports `--package` to restrict the run to a single check, `--fix` to
+ * trigger the auto-fix path for fixable checks, and `--json` to emit a
+ * machine-parseable payload for CI consumption.
+ *
+ * @package    ArtisanPack_UI
+ * @subpackage Core\Commands
+ *
+ * @since      1.2.0
+ */
 #[AsCommand( name: 'artisanpack:diagnose' )]
 class DiagnoseCommand extends Command
 {
     /**
+     * The name and signature of the console command.
+     *
+     * @since 1.2.0
+     *
      * @var string
      */
     protected $signature = 'artisanpack:diagnose
@@ -27,10 +50,23 @@ class DiagnoseCommand extends Command
                             {--package= : Restrict the report to a single check id (e.g. environment, packages).}';
 
     /**
+     * The console command description.
+     *
+     * @since 1.2.0
+     *
      * @var string
      */
     protected $description = 'Run diagnostics on the ArtisanPack UI installation and report its health.';
 
+    /**
+     * Execute the command.
+     *
+     * @since 1.2.0
+     *
+     * @param  DiagnosticRunner  $runner  The diagnostic runner resolved from the container.
+     *
+     * @return int Command exit code.
+     */
     public function handle( DiagnosticRunner $runner ): int
     {
         $packageOption = $this->option( 'package' );
@@ -69,18 +105,44 @@ class DiagnoseCommand extends Command
     }
 
     /**
-     * @return array<int, string>
+     * Collect the identifiers of the runner's registered checks.
+     *
+     * @since 1.2.0
+     *
+     * @param  DiagnosticRunner  $runner  The diagnostic runner.
+     *
+     * @return array<int, string> The registered check identifiers.
      */
     protected function availableCheckIds( DiagnosticRunner $runner ): array
     {
         return array_map( fn ( $c ) => $c->id(), $runner->checks() );
     }
 
+    /**
+     * Determine whether the runner has a check with the given identifier.
+     *
+     * @since 1.2.0
+     *
+     * @param  DiagnosticRunner  $runner  The diagnostic runner.
+     * @param  string            $id      The check identifier to look up.
+     *
+     * @return bool True when a matching check is registered.
+     */
     protected function checkExists( DiagnosticRunner $runner, string $id ): bool
     {
         return in_array( $id, $this->availableCheckIds( $runner ), true );
     }
 
+    /**
+     * Drive the fix flow for every fixable check, optionally filtered.
+     *
+     * @since 1.2.0
+     *
+     * @param  DiagnosticRunner  $runner  The diagnostic runner.
+     * @param  string|null       $only    Optional check identifier to focus on.
+     *
+     * @return bool True when every attempted fix succeeded.
+     */
     protected function runFixes( DiagnosticRunner $runner, ?string $only ): bool
     {
         $fixable = $runner->fixableChecks( $only );
@@ -108,6 +170,15 @@ class DiagnoseCommand extends Command
         return $allSucceeded;
     }
 
+    /**
+     * Render the diagnostic report on the console.
+     *
+     * @since 1.2.0
+     *
+     * @param  DiagnosticReport  $report  The aggregated report.
+     *
+     * @return void
+     */
     protected function renderReport( DiagnosticReport $report ): void
     {
         $this->line( 'ArtisanPack UI Diagnostic Report' );
@@ -132,6 +203,15 @@ class DiagnoseCommand extends Command
         $this->line( '  ' . DiagnosticStatus::Error->symbol() . " {$report->errorCount()} errors" );
     }
 
+    /**
+     * Render a single diagnostic result row, expanding details in verbose mode.
+     *
+     * @since 1.2.0
+     *
+     * @param  DiagnosticResult  $result  The result row to render.
+     *
+     * @return void
+     */
     protected function renderResult( DiagnosticResult $result ): void
     {
         $symbol  = $result->status->symbol();

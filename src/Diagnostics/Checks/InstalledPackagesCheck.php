@@ -3,7 +3,12 @@
 /**
  * Reports which ArtisanPack UI packages are installed and at what version.
  *
- * @since 1.2.0
+ * @package    ArtisanPack_UI
+ * @subpackage Core\Diagnostics\Checks
+ *
+ * @author     Jacob Martella <me@jacobmartella.com>
+ *
+ * @since      1.2.0
  */
 
 namespace ArtisanPackUI\Core\Diagnostics\Checks;
@@ -12,10 +17,26 @@ use ArtisanPackUI\Core\Diagnostics\DiagnosticResult;
 use ArtisanPackUI\Core\Diagnostics\DiagnosticStatus;
 use ArtisanPackUI\Core\Diagnostics\Support\ComposerLock;
 
+/**
+ * Diagnostic check that surveys the application's `composer.lock` and reports
+ * the installed status of every known ArtisanPack UI package.
+ *
+ * The package list is the canonical inventory consumed by other diagnostics
+ * ( {@see \ArtisanPackUI\Core\Updates\UpdateChecker},
+ * {@see \ArtisanPackUI\Core\Compatibility\CompatibilityChecker} ) to decide
+ * which packages they should consider.
+ *
+ * @package    ArtisanPack_UI
+ * @subpackage Core\Diagnostics\Checks
+ *
+ * @since      1.2.0
+ */
 class InstalledPackagesCheck implements DiagnosticCheck
 {
     /**
      * Canonical list of ArtisanPack UI packages we report on.
+     *
+     * @since 1.2.0
      *
      * @var array<int, string>
      */
@@ -32,16 +53,25 @@ class InstalledPackagesCheck implements DiagnosticCheck
         'artisanpack-ui/security',
     ];
 
+    /**
+     * {@inheritDoc}
+     */
     public function id(): string
     {
         return 'packages';
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function name(): string
     {
         return 'Installed Packages';
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function run(): array
     {
         $installed = $this->getInstalledPackageVersions();
@@ -68,18 +98,28 @@ class InstalledPackagesCheck implements DiagnosticCheck
         return $results;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function supportsFix(): bool
     {
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function fix( callable $writer ): bool
     {
         return false;
     }
 
     /**
-     * @return array<string, string>
+     * Read the installed ArtisanPack UI packages from `composer.lock`.
+     *
+     * @since 1.2.0
+     *
+     * @return array<string, string> Map of package name → version (leading `v` stripped).
      */
     protected function getInstalledPackageVersions(): array
     {

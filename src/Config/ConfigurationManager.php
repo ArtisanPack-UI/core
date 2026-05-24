@@ -3,9 +3,12 @@
 /**
  * Unified configuration manager for ArtisanPack UI packages.
  *
- * @since      1.2.0
+ * @package    ArtisanPack_UI
+ * @subpackage Core\Config
  *
- * @package    ArtisanPackUI\Core\Config
+ * @author     Jacob Martella <me@jacobmartella.com>
+ *
+ * @since      1.2.0
  */
 
 namespace ArtisanPackUI\Core\Config;
@@ -22,9 +25,10 @@ use Illuminate\Contracts\Config\Repository;
  * behind package-aware helpers so callers never have to assemble the dotted
  * key paths themselves.
  *
- * @since 1.2.0
+ * @package    ArtisanPack_UI
+ * @subpackage Core\Config
  *
- * @package ArtisanPackUI\Core\Config
+ * @since      1.2.0
  */
 class ConfigurationManager
 {

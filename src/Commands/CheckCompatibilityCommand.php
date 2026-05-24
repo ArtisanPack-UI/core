@@ -3,7 +3,12 @@
 /**
  * Artisan command that reports compatibility across installed ArtisanPack UI packages.
  *
- * @since 1.2.0
+ * @package    ArtisanPack_UI
+ * @subpackage Core\Commands
+ *
+ * @author     Jacob Martella <me@jacobmartella.com>
+ *
+ * @since      1.2.0
  */
 
 namespace ArtisanPackUI\Core\Commands;
@@ -12,10 +17,27 @@ use ArtisanPackUI\Core\Compatibility\CompatibilityChecker;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Attribute\AsCommand;
 
+/**
+ * `artisanpack:check-compatibility` command — runs the
+ * {@see CompatibilityChecker} and renders its findings as a human-readable
+ * table or JSON payload for scripting.
+ *
+ * Supports `--package` to focus on a single ArtisanPack UI package and
+ * `--strict` to fail when warnings are present.
+ *
+ * @package    ArtisanPack_UI
+ * @subpackage Core\Commands
+ *
+ * @since      1.2.0
+ */
 #[AsCommand( name: 'artisanpack:check-compatibility' )]
 class CheckCompatibilityCommand extends Command
 {
     /**
+     * The name and signature of the console command.
+     *
+     * @since 1.2.0
+     *
      * @var string
      */
     protected $signature = 'artisanpack:check-compatibility
@@ -24,10 +46,23 @@ class CheckCompatibilityCommand extends Command
                             {--package= : Restrict the report to a single ArtisanPack UI package (e.g. artisanpack-ui/core).}';
 
     /**
+     * The console command description.
+     *
+     * @since 1.2.0
+     *
      * @var string
      */
     protected $description = 'Analyze installed ArtisanPack UI packages for version, PHP, and Laravel compatibility.';
 
+    /**
+     * Execute the command.
+     *
+     * @since 1.2.0
+     *
+     * @param  CompatibilityChecker  $checker  The compatibility checker resolved from the container.
+     *
+     * @return int Command exit code.
+     */
     public function handle( CompatibilityChecker $checker ): int
     {
         $packageOption = $this->option( 'package' );
@@ -57,7 +92,13 @@ class CheckCompatibilityCommand extends Command
     }
 
     /**
-     * @param  array<string, mixed>  $report
+     * Emit the report as JSON.
+     *
+     * @since 1.2.0
+     *
+     * @param  array<string, mixed>  $report  The compatibility report.
+     *
+     * @return int Command exit code.
      */
     protected function emitJson( array $report ): int
     {
@@ -75,7 +116,13 @@ class CheckCompatibilityCommand extends Command
     }
 
     /**
-     * @param  array<string, mixed>  $report
+     * Derive the command exit code from the report summary, honouring `--strict`.
+     *
+     * @since 1.2.0
+     *
+     * @param  array<string, mixed>  $report  The compatibility report.
+     *
+     * @return int Command exit code.
      */
     protected function resolveExitCode( array $report ): int
     {
@@ -94,7 +141,13 @@ class CheckCompatibilityCommand extends Command
     }
 
     /**
-     * @param  array<string, mixed>  $report
+     * Render the report in human-readable form on the console.
+     *
+     * @since 1.2.0
+     *
+     * @param  array<string, mixed>  $report  The compatibility report.
+     *
+     * @return void
      */
     protected function renderReport( array $report ): void
     {
@@ -112,7 +165,13 @@ class CheckCompatibilityCommand extends Command
     }
 
     /**
-     * @param  array<string, mixed>  $report
+     * Render the installed-packages section of the report.
+     *
+     * @since 1.2.0
+     *
+     * @param  array<string, mixed>  $report  The compatibility report.
+     *
+     * @return void
      */
     protected function renderInstalledPackages( array $report ): void
     {
@@ -135,7 +194,15 @@ class CheckCompatibilityCommand extends Command
     }
 
     /**
-     * @param  array<int, array<string, mixed>>  $results
+     * Render a single titled section of result rows.
+     *
+     * @since 1.2.0
+     *
+     * @param  string                            $title         Section heading.
+     * @param  array<int, array<string, mixed>>  $results       Result rows in the section.
+     * @param  string                            $emptyMessage  Message used when the section is empty.
+     *
+     * @return void
      */
     protected function renderSection( string $title, array $results, string $emptyMessage ): void
     {
@@ -156,7 +223,13 @@ class CheckCompatibilityCommand extends Command
     }
 
     /**
-     * @param  array<string, mixed>  $report
+     * Render the summary line ( error / warning counts ).
+     *
+     * @since 1.2.0
+     *
+     * @param  array<string, mixed>  $report  The compatibility report.
+     *
+     * @return void
      */
     protected function renderSummary( array $report ): void
     {
@@ -185,7 +258,13 @@ class CheckCompatibilityCommand extends Command
     }
 
     /**
-     * @param  array<string, mixed>  $report
+     * Render the remediation recommendations, if any.
+     *
+     * @since 1.2.0
+     *
+     * @param  array<string, mixed>  $report  The compatibility report.
+     *
+     * @return void
      */
     protected function renderRecommendations( array $report ): void
     {
@@ -204,6 +283,15 @@ class CheckCompatibilityCommand extends Command
         $this->newLine();
     }
 
+    /**
+     * Map a severity string to a Unicode symbol used in the rendered output.
+     *
+     * @since 1.2.0
+     *
+     * @param  string  $severity  One of `error`, `warning`, or `pass`.
+     *
+     * @return string The corresponding Unicode symbol.
+     */
     protected function symbolFor( string $severity ): string
     {
         return match ( $severity ) {

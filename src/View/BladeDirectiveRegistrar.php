@@ -3,9 +3,12 @@
 /**
  * Helper for registering common Blade directive patterns.
  *
- * @since      1.2.0
+ * @package    ArtisanPack_UI
+ * @subpackage Core\View
  *
- * @package    ArtisanPackUI\Core\View
+ * @author     Jacob Martella <me@jacobmartella.com>
+ *
+ * @since      1.2.0
  */
 
 namespace ArtisanPackUI\Core\View;
@@ -42,9 +45,10 @@ use InvalidArgumentException;
  * resolved via `app()`, or obtained through the {@see artisanpack_blade()}
  * helper.
  *
- * @since 1.2.0
+ * @package    ArtisanPack_UI
+ * @subpackage Core\View
  *
- * @package ArtisanPackUI\Core\View
+ * @since      1.2.0
  */
 class BladeDirectiveRegistrar
 {

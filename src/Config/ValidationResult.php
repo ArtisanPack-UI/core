@@ -3,9 +3,12 @@
 /**
  * Result object describing the outcome of a configuration validation pass.
  *
- * @since      1.2.0
+ * @package    ArtisanPack_UI
+ * @subpackage Core\Config
  *
- * @package    ArtisanPackUI\Core\Config
+ * @author     Jacob Martella <me@jacobmartella.com>
+ *
+ * @since      1.2.0
  */
 
 namespace ArtisanPackUI\Core\Config;
@@ -17,9 +20,10 @@ namespace ArtisanPackUI\Core\Config;
  * key that failed and exposes a small, expressive API for inspecting whether
  * the validated configuration passed.
  *
- * @since 1.2.0
+ * @package    ArtisanPack_UI
+ * @subpackage Core\Config
  *
- * @package ArtisanPackUI\Core\Config
+ * @since      1.2.0
  */
 class ValidationResult
 {

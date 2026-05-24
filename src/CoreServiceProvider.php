@@ -1,5 +1,16 @@
 <?php
 
+/**
+ * Service provider for the ArtisanPack UI Core package.
+ *
+ * @package    ArtisanPack_UI
+ * @subpackage Core
+ *
+ * @author     Jacob Martella <me@jacobmartella.com>
+ *
+ * @since      1.0.0
+ */
+
 namespace ArtisanPackUI\Core;
 
 use ArtisanPackUI\Core\Commands\CheckCompatibilityCommand;
@@ -23,8 +34,29 @@ use Illuminate\Log\LogManager;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\View\Compilers\BladeCompiler;
 
+/**
+ * Registers every shared service the ArtisanPack UI ecosystem relies on.
+ *
+ * Wires the container singletons for configuration management, logging,
+ * Blade directive registration, environment diagnostics, cross-package
+ * compatibility analysis, and Packagist-backed update checking. Also
+ * registers the package-management Artisan commands and publishes the
+ * unified `config/artisanpack.php` config stub.
+ *
+ * @package    ArtisanPack_UI
+ * @subpackage Core
+ *
+ * @since      1.0.0
+ */
 class CoreServiceProvider extends ServiceProvider
 {
+    /**
+     * Register container bindings.
+     *
+     * @since 1.0.0
+     *
+     * @return void
+     */
     public function register(): void
     {
         $this->app->singleton( 'core', function ( $app ) {
@@ -68,6 +100,16 @@ class CoreServiceProvider extends ServiceProvider
         } );
     }
 
+    /**
+     * Bootstrap package services.
+     *
+     * Publishes the unified configuration stub and registers the
+     * package-management Artisan commands.
+     *
+     * @since 1.0.0
+     *
+     * @return void
+     */
     public function boot(): void
     {
         if ( $this->app->runningInConsole() ) {

@@ -3,9 +3,12 @@
 /**
  * Base facade class shared across the ArtisanPack UI ecosystem.
  *
- * @since      1.2.0
+ * @package    ArtisanPack_UI
+ * @subpackage Core\Facades
  *
- * @package    ArtisanPackUI\Core\Facades
+ * @author     Jacob Martella <me@jacobmartella.com>
+ *
+ * @since      1.2.0
  */
 
 namespace ArtisanPackUI\Core\Facades;
@@ -24,9 +27,10 @@ use Illuminate\Support\Facades\Facade;
  * {@see static::getPackageName()} so that the exception thrown when the
  * service is missing names the package the consumer needs to install.
  *
- * @since 1.2.0
+ * @package    ArtisanPack_UI
+ * @subpackage Core\Facades
  *
- * @package ArtisanPackUI\Core\Facades
+ * @since      1.2.0
  */
 abstract class ArtisanPackFacade extends Facade
 {

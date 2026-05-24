@@ -3,9 +3,12 @@
 /**
  * Shared logger contract used across the ArtisanPack UI ecosystem.
  *
- * @since      1.2.0
+ * @package    ArtisanPack_UI
+ * @subpackage Core\Logging
  *
- * @package    ArtisanPackUI\Core\Logging
+ * @author     Jacob Martella <me@jacobmartella.com>
+ *
+ * @since      1.2.0
  */
 
 namespace ArtisanPackUI\Core\Logging;
@@ -19,9 +22,10 @@ namespace ArtisanPackUI\Core\Logging;
  * aggregated log streams can be filtered cleanly, and emitting structured
  * audit records that include the actor, request, and timestamp metadata.
  *
- * @since 1.2.0
+ * @package    ArtisanPack_UI
+ * @subpackage Core\Logging
  *
- * @package ArtisanPackUI\Core\Logging
+ * @since      1.2.0
  */
 interface ArtisanPackLogger
 {

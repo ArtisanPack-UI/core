@@ -3,7 +3,12 @@
 /**
  * Artisan command that reports available updates for installed ArtisanPack UI packages.
  *
- * @since 1.2.0
+ * @package    ArtisanPack_UI
+ * @subpackage Core\Commands
+ *
+ * @author     Jacob Martella <me@jacobmartella.com>
+ *
+ * @since      1.2.0
  */
 
 namespace ArtisanPackUI\Core\Commands;
@@ -12,10 +17,26 @@ use ArtisanPackUI\Core\Updates\UpdateChecker;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Attribute\AsCommand;
 
+/**
+ * `artisanpack:check-updates` command — runs the {@see UpdateChecker} and
+ * renders its findings as a human-readable report or JSON payload.
+ *
+ * Supports `--minor-only`, `--security-only`, `--json`, and `--changelog`
+ * to tailor the output to interactive use or CI consumption.
+ *
+ * @package    ArtisanPack_UI
+ * @subpackage Core\Commands
+ *
+ * @since      1.2.0
+ */
 #[AsCommand( name: 'artisanpack:check-updates' )]
 class CheckUpdatesCommand extends Command
 {
     /**
+     * The name and signature of the console command.
+     *
+     * @since 1.2.0
+     *
      * @var string
      */
     protected $signature = 'artisanpack:check-updates
@@ -25,10 +46,23 @@ class CheckUpdatesCommand extends Command
                             {--changelog : Include changelog excerpts and source URLs in the output.}';
 
     /**
+     * The console command description.
+     *
+     * @since 1.2.0
+     *
      * @var string
      */
     protected $description = 'Check for available updates to installed ArtisanPack UI packages.';
 
+    /**
+     * Execute the command.
+     *
+     * @since 1.2.0
+     *
+     * @param  UpdateChecker  $checker  The update checker resolved from the container.
+     *
+     * @return int Command exit code.
+     */
     public function handle( UpdateChecker $checker ): int
     {
         $report = $checker->check( [
@@ -46,7 +80,13 @@ class CheckUpdatesCommand extends Command
     }
 
     /**
-     * @param  array<string, mixed>  $report
+     * Emit the report as JSON.
+     *
+     * @since 1.2.0
+     *
+     * @param  array<string, mixed>  $report  The update report.
+     *
+     * @return int Command exit code.
      */
     protected function emitJson( array $report ): int
     {
@@ -64,7 +104,13 @@ class CheckUpdatesCommand extends Command
     }
 
     /**
-     * @param  array<string, mixed>  $report
+     * Render the report in human-readable form on the console.
+     *
+     * @since 1.2.0
+     *
+     * @param  array<string, mixed>  $report  The update report.
+     *
+     * @return void
      */
     protected function renderReport( array $report ): void
     {
@@ -91,7 +137,13 @@ class CheckUpdatesCommand extends Command
     }
 
     /**
-     * @param  array<int, array<string, mixed>>  $updates
+     * Render the per-package update rows.
+     *
+     * @since 1.2.0
+     *
+     * @param  array<int, array<string, mixed>>  $updates  Update rows from the report.
+     *
+     * @return void
      */
     protected function renderUpdates( array $updates ): void
     {
@@ -122,7 +174,13 @@ class CheckUpdatesCommand extends Command
     }
 
     /**
-     * @param  array<string, mixed>  $update
+     * Render the release notes attached to a single update row when `--changelog` is set.
+     *
+     * @since 1.2.0
+     *
+     * @param  array<string, mixed>  $update  A single update row.
+     *
+     * @return void
      */
     protected function renderReleaseNotes( array $update ): void
     {
@@ -144,7 +202,13 @@ class CheckUpdatesCommand extends Command
     }
 
     /**
-     * @param  array<string, string>  $packages
+     * Render the up-to-date packages section.
+     *
+     * @since 1.2.0
+     *
+     * @param  array<string, string>  $packages  Package name → installed version.
+     *
+     * @return void
      */
     protected function renderUpToDate( array $packages ): void
     {
@@ -162,7 +226,13 @@ class CheckUpdatesCommand extends Command
     }
 
     /**
-     * @param  array<int, array<string, mixed>>  $errors
+     * Render any per-package errors collected during the lookup.
+     *
+     * @since 1.2.0
+     *
+     * @param  array<int, array<string, mixed>>  $errors  Error rows from the report.
+     *
+     * @return void
      */
     protected function renderErrors( array $errors ): void
     {
@@ -182,7 +252,13 @@ class CheckUpdatesCommand extends Command
     }
 
     /**
-     * @param  array<string, int>  $summary
+     * Render the summary line ( updates available / major / security counts ).
+     *
+     * @since 1.2.0
+     *
+     * @param  array<string, int>  $summary  The summary section of the report.
+     *
+     * @return void
      */
     protected function renderSummary( array $summary ): void
     {
@@ -214,7 +290,13 @@ class CheckUpdatesCommand extends Command
     }
 
     /**
-     * @param  array<int, array<string, mixed>>  $updates
+     * Print the suggested `composer update` command for the available updates.
+     *
+     * @since 1.2.0
+     *
+     * @param  array<int, array<string, mixed>>  $updates  Update rows from the report.
+     *
+     * @return void
      */
     protected function renderUpgradeHint( array $updates ): void
     {

@@ -3,7 +3,12 @@
 /**
  * Client for querying the Packagist API for ArtisanPack UI package metadata.
  *
- * @since 1.2.0
+ * @package    ArtisanPack_UI
+ * @subpackage Core\Updates
+ *
+ * @author     Jacob Martella <me@jacobmartella.com>
+ *
+ * @since      1.2.0
  */
 
 namespace ArtisanPackUI\Core\Updates;
@@ -13,12 +18,50 @@ use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Http\Client\Factory as HttpFactory;
 use Throwable;
 
+/**
+ * Thin Packagist v2 API client used by {@see UpdateChecker} to discover the
+ * latest release information for ArtisanPack UI packages.
+ *
+ * Responses are cached for the duration configured under
+ * `artisanpack.core.updates.cache_ttl` so the `artisanpack:check-updates`
+ * command can be run repeatedly without hitting the Packagist API every
+ * invocation. Cache entries are refreshed on read so frequently-queried
+ * packages keep their releases warm.
+ *
+ * @package    ArtisanPack_UI
+ * @subpackage Core\Updates
+ *
+ * @since      1.2.0
+ */
 class PackagistClient
 {
+    /**
+     * Base URL for the Packagist v2 metadata API.
+     *
+     * @since 1.2.0
+     *
+     * @var string
+     */
     protected const BASE_URL = 'https://repo.packagist.org/p2/';
 
+    /**
+     * Cache-key prefix applied to every cached Packagist response.
+     *
+     * @since 1.2.0
+     *
+     * @var string
+     */
     protected const CACHE_PREFIX = 'artisanpack-ui:updates:';
 
+    /**
+     * Create a new Packagist client.
+     *
+     * @since 1.2.0
+     *
+     * @param  HttpFactory      $http    HTTP client factory used to issue requests.
+     * @param  CacheRepository  $cache   Cache repository used to memoise responses.
+     * @param  ConfigRepository $config  Config repository used to read the cache TTL.
+     */
     public function __construct(
         protected HttpFactory $http,
         protected CacheRepository $cache,
@@ -37,7 +80,11 @@ class PackagistClient
      * Laravel-version check so that custom cache repositories which already
      * expose touch() benefit on older framework versions too.
      *
-     * @return array<int, array<string, mixed>>
+     * @since 1.2.0
+     *
+     * @param  string  $package  The fully-qualified `vendor/package` identifier.
+     *
+     * @return array<int, array<string, mixed>> The Packagist release entries sorted newest first.
      */
     public function getReleases( string $package ): array
     {
@@ -62,7 +109,11 @@ class PackagistClient
     /**
      * Fetch the latest stable release for a package, or null if unavailable.
      *
-     * @return array<string, mixed>|null
+     * @since 1.2.0
+     *
+     * @param  string  $package  The fully-qualified `vendor/package` identifier.
+     *
+     * @return array<string, mixed>|null The newest stable release entry, or null when none exist.
      */
     public function getLatestRelease( string $package ): ?array
     {
@@ -73,6 +124,12 @@ class PackagistClient
 
     /**
      * Forget cached release data for a package.
+     *
+     * @since 1.2.0
+     *
+     * @param  string  $package  The fully-qualified `vendor/package` identifier.
+     *
+     * @return void
      */
     public function forget( string $package ): void
     {
@@ -89,7 +146,13 @@ class PackagistClient
      * - this can happen if the entry expired between the get() above and the
      * touch() call here.
      *
-     * @param  array<int, array<string, mixed>>  $cached
+     * @since 1.2.0
+     *
+     * @param  string                            $key     The full cache key being refreshed.
+     * @param  int                               $ttl     The TTL in seconds to apply.
+     * @param  array<int, array<string, mixed>>  $cached  The currently cached payload.
+     *
+     * @return void
      */
     protected function refreshCacheTtl( string $key, int $ttl, array $cached ): void
     {
@@ -101,7 +164,13 @@ class PackagistClient
     }
 
     /**
-     * @return array<int, array<string, mixed>>
+     * Perform the network request to Packagist and normalise the response.
+     *
+     * @since 1.2.0
+     *
+     * @param  string  $package  The fully-qualified `vendor/package` identifier.
+     *
+     * @return array<int, array<string, mixed>> The stable release entries sorted newest first.
      */
     protected function fetchReleases( string $package ): array
     {
@@ -159,6 +228,15 @@ class PackagistClient
         return $stable;
     }
 
+    /**
+     * Heuristically detect non-stable version strings (dev / alpha / beta / rc).
+     *
+     * @since 1.2.0
+     *
+     * @param  string  $version  The version string to evaluate.
+     *
+     * @return bool True when the version is a pre-release or development build.
+     */
     protected function isDevVersion( string $version ): bool
     {
         $normalized = strtolower( $version );

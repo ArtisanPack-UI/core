@@ -3,9 +3,12 @@
 /**
  * Lightweight schema describing the expected shape of a package configuration.
  *
- * @since      1.2.0
+ * @package    ArtisanPack_UI
+ * @subpackage Core\Config
  *
- * @package    ArtisanPackUI\Core\Config
+ * @author     Jacob Martella <me@jacobmartella.com>
+ *
+ * @since      1.2.0
  */
 
 namespace ArtisanPackUI\Core\Config;
@@ -23,9 +26,10 @@ use Illuminate\Support\Arr;
  * - `required` Whether the key must be present in the configuration.
  * - `in`       A list of allowed values for the key.
  *
- * @since 1.2.0
+ * @package    ArtisanPack_UI
+ * @subpackage Core\Config
  *
- * @package ArtisanPackUI\Core\Config
+ * @since      1.2.0
  */
 class ConfigurationSchema
 {

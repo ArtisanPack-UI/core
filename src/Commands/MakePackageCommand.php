@@ -3,9 +3,12 @@
 /**
  * Artisan command to scaffold a new ArtisanPack UI package.
  *
- * @since      1.2.0
+ * @package    ArtisanPack_UI
+ * @subpackage Core\Commands
  *
- * @package    ArtisanPackUI\Core
+ * @author     Jacob Martella <me@jacobmartella.com>
+ *
+ * @since      1.2.0
  */
 
 namespace ArtisanPackUI\Core\Commands;

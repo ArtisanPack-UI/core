@@ -3,9 +3,12 @@
 /**
  * Base exception for all ArtisanPack UI errors.
  *
- * @since      1.2.0
+ * @package    ArtisanPack_UI
+ * @subpackage Core\Exceptions
  *
- * @package    ArtisanPackUI\Core\Exceptions
+ * @author     Jacob Martella <me@jacobmartella.com>
+ *
+ * @since      1.2.0
  */
 
 namespace ArtisanPackUI\Core\Exceptions;
@@ -19,9 +22,10 @@ use Throwable;
  * single catch block while retaining package identification, optional error
  * codes, and structured context for logging.
  *
- * @since 1.2.0
+ * @package    ArtisanPack_UI
+ * @subpackage Core\Exceptions
  *
- * @package ArtisanPackUI\Core\Exceptions
+ * @since      1.2.0
  */
 class ArtisanPackException extends Exception
 {

@@ -3,7 +3,12 @@
 /**
  * Verifies the PHP/Laravel/Livewire environment meets ArtisanPack UI minimums.
  *
- * @since 1.2.0
+ * @package    ArtisanPack_UI
+ * @subpackage Core\Diagnostics\Checks
+ *
+ * @author     Jacob Martella <me@jacobmartella.com>
+ *
+ * @since      1.2.0
  */
 
 namespace ArtisanPackUI\Core\Diagnostics\Checks;
@@ -13,14 +18,44 @@ use ArtisanPackUI\Core\Diagnostics\DiagnosticStatus;
 use ArtisanPackUI\Core\Diagnostics\Support\ComposerLock;
 use Illuminate\Contracts\Foundation\Application;
 
+/**
+ * Diagnostic check that reports on PHP, Laravel, Livewire, and required
+ * PHP extensions.
+ *
+ * Emitted results cover the runtime PHP version against
+ * {@see self::MIN_PHP_VERSION}, the Laravel framework version against
+ * {@see self::MIN_LARAVEL_VERSION}, the optional Livewire version, and the
+ * presence of every extension in {@see self::REQUIRED_EXTENSIONS}.
+ *
+ * @package    ArtisanPack_UI
+ * @subpackage Core\Diagnostics\Checks
+ *
+ * @since      1.2.0
+ */
 class EnvironmentCheck implements DiagnosticCheck
 {
+    /**
+     * Minimum PHP version supported by the ArtisanPack UI ecosystem.
+     *
+     * @since 1.2.0
+     *
+     * @var string
+     */
     public const MIN_PHP_VERSION = '8.2.0';
 
+    /**
+     * Minimum Laravel framework version supported by the ArtisanPack UI ecosystem.
+     *
+     * @since 1.2.0
+     *
+     * @var string
+     */
     public const MIN_LARAVEL_VERSION = '10.0.0';
 
     /**
      * PHP extensions required by Laravel core that ArtisanPack UI also relies on.
+     *
+     * @since 1.2.0
      *
      * @var array<int, string>
      */
@@ -33,20 +68,36 @@ class EnvironmentCheck implements DiagnosticCheck
         'tokenizer',
     ];
 
+    /**
+     * Create a new environment check.
+     *
+     * @since 1.2.0
+     *
+     * @param  Application  $app  The Laravel application used to read the framework version.
+     */
     public function __construct( protected Application $app )
     {
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function id(): string
     {
         return 'environment';
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function name(): string
     {
         return 'Environment';
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function run(): array
     {
         $results = [];
@@ -109,16 +160,31 @@ class EnvironmentCheck implements DiagnosticCheck
         return $results;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function supportsFix(): bool
     {
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function fix( callable $writer ): bool
     {
         return false;
     }
 
+    /**
+     * Look up the installed version of a Composer package via the lockfile.
+     *
+     * @since 1.2.0
+     *
+     * @param  string  $packageName  The fully-qualified `vendor/package` identifier.
+     *
+     * @return string|null The version with any leading `v` stripped, or null when the package is absent.
+     */
     protected function detectInstalledVersion( string $packageName ): ?string
     {
         foreach ( ComposerLock::packages() as $package ) {

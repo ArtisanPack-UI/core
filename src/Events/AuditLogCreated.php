@@ -3,9 +3,12 @@
 /**
  * Event dispatched whenever an audit log entry is recorded.
  *
- * @since      1.2.0
+ * @package    ArtisanPack_UI
+ * @subpackage Core\Events
  *
- * @package    ArtisanPackUI\Core\Events
+ * @author     Jacob Martella <me@jacobmartella.com>
+ *
+ * @since      1.2.0
  */
 
 namespace ArtisanPackUI\Core\Events;
@@ -22,9 +25,10 @@ namespace ArtisanPackUI\Core\Events;
  * database, forward them to an external aggregation service ( such as
  * Elasticsearch ), or trigger downstream notifications.
  *
- * @since 1.2.0
+ * @package    ArtisanPack_UI
+ * @subpackage Core\Events
  *
- * @package ArtisanPackUI\Core\Events
+ * @since      1.2.0
  */
 class AuditLogCreated
 {

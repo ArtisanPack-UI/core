@@ -3,9 +3,12 @@
 /**
  * Factory that resolves shared {@see ArtisanPackLogger} instances per package.
  *
- * @since      1.2.0
+ * @package    ArtisanPack_UI
+ * @subpackage Core\Logging
  *
- * @package    ArtisanPackUI\Core\Logging
+ * @author     Jacob Martella <me@jacobmartella.com>
+ *
+ * @since      1.2.0
  */
 
 namespace ArtisanPackUI\Core\Logging;
@@ -27,9 +30,10 @@ use Illuminate\Log\LogManager;
  * either inject it directly or resolve it through the
  * {@see \ArtisanPackUI\Core\Facades\ArtisanPackLog} facade.
  *
- * @since 1.2.0
+ * @package    ArtisanPack_UI
+ * @subpackage Core\Logging
  *
- * @package ArtisanPackUI\Core\Logging
+ * @since      1.2.0
  */
 class LoggerFactory
 {

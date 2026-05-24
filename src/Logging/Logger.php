@@ -3,9 +3,12 @@
 /**
  * Default {@see ArtisanPackLogger} implementation backed by Laravel's log stack.
  *
- * @since      1.2.0
+ * @package    ArtisanPack_UI
+ * @subpackage Core\Logging
  *
- * @package    ArtisanPackUI\Core\Logging
+ * @author     Jacob Martella <me@jacobmartella.com>
+ *
+ * @since      1.2.0
  */
 
 namespace ArtisanPackUI\Core\Logging;
@@ -31,9 +34,10 @@ use Throwable;
  * and dispatch the {@see AuditLogCreated} event so applications can intercept
  * them for database storage or downstream aggregation.
  *
- * @since 1.2.0
+ * @package    ArtisanPack_UI
+ * @subpackage Core\Logging
  *
- * @package ArtisanPackUI\Core\Logging
+ * @since      1.2.0
  */
 class Logger implements ArtisanPackLogger
 {

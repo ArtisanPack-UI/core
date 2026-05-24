@@ -3,7 +3,12 @@
 /**
  * Reports the known ArtisanPack UI service-container bindings.
  *
- * @since 1.2.0
+ * @package    ArtisanPack_UI
+ * @subpackage Core\Diagnostics\Checks
+ *
+ * @author     Jacob Martella <me@jacobmartella.com>
+ *
+ * @since      1.2.0
  */
 
 namespace ArtisanPackUI\Core\Diagnostics\Checks;
@@ -13,10 +18,26 @@ use ArtisanPackUI\Core\Diagnostics\DiagnosticStatus;
 use Illuminate\Contracts\Foundation\Application;
 use Throwable;
 
+/**
+ * Diagnostic check that walks {@see self::KNOWN_BINDINGS} and confirms that
+ * each expected alias resolves out of the container to the expected concrete
+ * implementation.
+ *
+ * Surfacing this in the diagnose report makes service-provider misregistration
+ * issues — for example a sibling package's provider being skipped — visible
+ * without having to bisect the container manually.
+ *
+ * @package    ArtisanPack_UI
+ * @subpackage Core\Diagnostics\Checks
+ *
+ * @since      1.2.0
+ */
 class ServiceBindingsCheck implements DiagnosticCheck
 {
     /**
      * Bindings keyed by alias → expected concrete class.
+     *
+     * @since 1.2.0
      *
      * @var array<string, string>
      */
@@ -25,20 +46,36 @@ class ServiceBindingsCheck implements DiagnosticCheck
         'a11y' => \ArtisanPack\Accessibility\Accessibility::class,
     ];
 
+    /**
+     * Create a new service-bindings check.
+     *
+     * @since 1.2.0
+     *
+     * @param  Application  $app  The Laravel application whose container is inspected.
+     */
     public function __construct( protected Application $app )
     {
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function id(): string
     {
         return 'service-bindings';
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function name(): string
     {
         return 'Service Bindings';
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function run(): array
     {
         $results = [];
@@ -101,11 +138,17 @@ class ServiceBindingsCheck implements DiagnosticCheck
         return $results;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function supportsFix(): bool
     {
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function fix( callable $writer ): bool
     {
         return false;
