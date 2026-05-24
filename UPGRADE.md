@@ -1,5 +1,35 @@
 # Upgrade Guide
 
+## Upgrading from 1.1 to 1.2
+
+Version 1.2.0 adds support for Laravel 13 while continuing to support Laravel 11 and 12. **This change is additive — no action is required for existing users.**
+
+### Requirements Changes
+
+#### Laravel Version
+
+The `illuminate/support` constraint was widened from `^11.0|^12.0` to `^11.0|^12.0|^13.0`.
+
+| Package Version | PHP  | Laravel Versions Supported |
+|-----------------|------|----------------------------|
+| 1.1.x           | 8.2+ | 11.x, 12.x                 |
+| 1.2.x           | 8.2+ | 11.x, 12.x, 13.x           |
+
+#### PHP Version
+
+PHP 8.2+ remains the minimum requirement. Note that Laravel 13 itself requires PHP 8.3+, so:
+
+- PHP 8.2 users continue to receive Laravel 11/12.
+- Laravel 13 is only selectable on PHP 8.3+, as enforced by Laravel's own PHP constraint.
+
+No need to raise your PHP floor or change any code.
+
+### Upgrade Checklist
+
+- [ ] Run `composer update artisanpack-ui/core` to get version 1.2
+- [ ] (Optional) Upgrade to Laravel 13 if you are on PHP 8.3+
+- [ ] Test your application to ensure compatibility
+
 ## Upgrading from 1.0 to 1.1
 
 This guide covers the breaking changes introduced in version 1.1.0 and provides migration instructions.

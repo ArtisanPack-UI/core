@@ -1,0 +1,66 @@
+{
+    "name": "{{ vendor }}/{{ package }}",
+    "description": "TODO: Describe the {{ PackageName }} package.",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "{{ NamespaceEscaped }}\\": "src/"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "authors": [
+        {
+            "name": "TODO: Your Name",
+            "email": "TODO: you@example.com"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "illuminate/support": "^11.0|^12.0|^13.0",
+        "artisanpack-ui/core": "^1.2"
+    },
+    "require-dev": {
+        "pestphp/pest": "^3.8|^4.0",
+        "pestphp/pest-plugin-laravel": "^3.2|^4.0",
+        "orchestra/testbench": "^9.0|^10.0|^11.0",
+        "laravel/pint": "^1.26",
+        "friendsofphp/php-cs-fixer": "^3.75",
+        "artisanpack-ui/code-style": "^1.1",
+        "artisanpack-ui/code-style-pint": "^1.1",
+        "dealerdirect/phpcodesniffer-composer-installer": "^1.0"
+    },
+    "scripts": {
+        "test": "./vendor/bin/pest",
+        "lint": [
+            "./vendor/bin/php-cs-fixer fix --dry-run --diff",
+            "./vendor/bin/phpcs"
+        ],
+        "fix": "./vendor/bin/php-cs-fixer fix",
+        "cs": "./vendor/bin/phpcs",
+        "cs:fix": "./vendor/bin/phpcbf"
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "{{ NamespaceEscaped }}\\{{ PackageName }}ServiceProvider"
+            ],
+            "aliases": {
+                "{{ PackageName }}": "{{ NamespaceEscaped }}\\Facades\\{{ PackageName }}"
+            }
+        }
+    }
+}

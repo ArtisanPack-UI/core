@@ -6,170 +6,170 @@ use Illuminate\Support\Facades\Artisan;
 /**
  * Helper function to get protected/private property value.
  */
-function getProtectedProperty(object $object, string $propertyName): mixed
+function getProtectedProperty( object $object, string $propertyName ): mixed
 {
-    $reflection = new ReflectionClass($object);
-    $property = $reflection->getProperty($propertyName);
-    $property->setAccessible(true);
+    $reflection = new ReflectionClass( $object );
+    $property   = $reflection->getProperty( $propertyName );
+    $property->setAccessible( true );
 
-    return $property->getValue($object);
+    return $property->getValue( $object );
 }
 
 /**
  * Helper function to call protected/private method.
  */
-function callProtectedMethod(object $object, string $methodName, array $args = []): mixed
+function callProtectedMethod( object $object, string $methodName, array $args = [] ): mixed
 {
-    $reflection = new ReflectionClass($object);
-    $method = $reflection->getMethod($methodName);
-    $method->setAccessible(true);
+    $reflection = new ReflectionClass( $object );
+    $method     = $reflection->getMethod( $methodName );
+    $method->setAccessible( true );
 
-    return $method->invokeArgs($object, $args);
+    return $method->invokeArgs( $object, $args );
 }
 
-test('command is registered', function () {
+test( 'command is registered', function (): void {
     $commands = Artisan::all();
 
-    expect($commands)->toHaveKey('artisanpack:install-packages');
-    expect($commands['artisanpack:install-packages'])->toBeInstanceOf(InstallPackagesCommand::class);
-});
+    expect( $commands )->toHaveKey( 'artisanpack:install-packages' );
+    expect( $commands['artisanpack:install-packages'] )->toBeInstanceOf( InstallPackagesCommand::class );
+} );
 
-test('command has correct signature options', function () {
+test( 'command has correct signature options', function (): void {
     $command = new InstallPackagesCommand;
 
     $definition = $command->getDefinition();
 
-    expect($definition->hasOption('packages'))->toBeTrue();
-    expect($definition->hasOption('npm-packages'))->toBeTrue();
-    expect($definition->hasOption('skip-npm'))->toBeTrue();
-    expect($definition->hasOption('skip-scaffold'))->toBeTrue();
-    expect($definition->hasOption('skip-post-install'))->toBeTrue();
-    expect($definition->hasOption('all'))->toBeTrue();
-    expect($definition->hasOption('dry-run'))->toBeTrue();
-});
+    expect( $definition->hasOption( 'packages' ) )->toBeTrue();
+    expect( $definition->hasOption( 'npm-packages' ) )->toBeTrue();
+    expect( $definition->hasOption( 'skip-npm' ) )->toBeTrue();
+    expect( $definition->hasOption( 'skip-scaffold' ) )->toBeTrue();
+    expect( $definition->hasOption( 'skip-post-install' ) )->toBeTrue();
+    expect( $definition->hasOption( 'all' ) )->toBeTrue();
+    expect( $definition->hasOption( 'dry-run' ) )->toBeTrue();
+} );
 
-test('composer packages array is properly structured', function () {
-    $command = new InstallPackagesCommand;
-    $packages = getProtectedProperty($command, 'composerPackages');
+test( 'composer packages array is properly structured', function (): void {
+    $command  = new InstallPackagesCommand;
+    $packages = getProtectedProperty( $command, 'composerPackages' );
 
-    expect($packages)->toBeArray();
-    expect($packages)->not->toBeEmpty();
+    expect( $packages )->toBeArray();
+    expect( $packages )->not->toBeEmpty();
 
-    foreach ($packages as $name => $config) {
-        expect($name)->toStartWith('artisanpack-ui/');
-        expect($config)->toHaveKeys(['description', 'dev', 'postInstall']);
-        expect($config['description'])->toBeString();
-        expect($config['dev'])->toBeBool();
+    foreach ( $packages as $name => $config ) {
+        expect( $name )->toStartWith( 'artisanpack-ui/' );
+        expect( $config )->toHaveKeys( ['description', 'dev', 'postInstall'] );
+        expect( $config['description'] )->toBeString();
+        expect( $config['dev'] )->toBeBool();
     }
-});
+} );
 
-test('npm packages array is properly structured', function () {
-    $command = new InstallPackagesCommand;
-    $packages = getProtectedProperty($command, 'npmPackages');
+test( 'npm packages array is properly structured', function (): void {
+    $command  = new InstallPackagesCommand;
+    $packages = getProtectedProperty( $command, 'npmPackages' );
 
-    expect($packages)->toBeArray();
+    expect( $packages )->toBeArray();
 
-    foreach ($packages as $name => $description) {
-        expect($name)->toBeString();
-        expect($description)->toBeString();
+    foreach ( $packages as $name => $description ) {
+        expect( $name )->toBeString();
+        expect( $description )->toBeString();
     }
-});
+} );
 
-test('livewire-ui-components has generate-theme post-install command', function () {
-    $command = new InstallPackagesCommand;
-    $packages = getProtectedProperty($command, 'composerPackages');
+test( 'livewire-ui-components has generate-theme post-install command', function (): void {
+    $command  = new InstallPackagesCommand;
+    $packages = getProtectedProperty( $command, 'composerPackages' );
 
-    expect($packages)->toHaveKey('artisanpack-ui/livewire-ui-components');
-    expect($packages['artisanpack-ui/livewire-ui-components']['postInstall'])->toBe('artisanpack:generate-theme');
-});
+    expect( $packages )->toHaveKey( 'artisanpack-ui/livewire-ui-components' );
+    expect( $packages['artisanpack-ui/livewire-ui-components']['postInstall'] )->toBe( 'artisanpack:generate-theme' );
+} );
 
-test('dev packages are correctly identified', function () {
-    $command = new InstallPackagesCommand;
-    $packages = getProtectedProperty($command, 'composerPackages');
+test( 'dev packages are correctly identified', function (): void {
+    $command  = new InstallPackagesCommand;
+    $packages = getProtectedProperty( $command, 'composerPackages' );
 
-    $devPackages = array_filter($packages, fn ($config) => $config['dev'] === true);
+    $devPackages = array_filter( $packages, fn ( $config ) => true === $config['dev'] );
 
-    expect($devPackages)->toHaveKey('artisanpack-ui/code-style');
-    expect($devPackages)->toHaveKey('artisanpack-ui/code-style-pint');
-    expect(count($devPackages))->toBe(2);
-});
+    expect( $devPackages )->toHaveKey( 'artisanpack-ui/code-style' );
+    expect( $devPackages )->toHaveKey( 'artisanpack-ui/code-style-pint' );
+    expect( count( $devPackages ) )->toBe( 2 );
+} );
 
-test('non-dev packages are correctly identified', function () {
-    $command = new InstallPackagesCommand;
-    $packages = getProtectedProperty($command, 'composerPackages');
+test( 'non-dev packages are correctly identified', function (): void {
+    $command  = new InstallPackagesCommand;
+    $packages = getProtectedProperty( $command, 'composerPackages' );
 
-    $nonDevPackages = array_filter($packages, fn ($config) => $config['dev'] === false);
+    $nonDevPackages = array_filter( $packages, fn ( $config ) => false === $config['dev'] );
 
-    expect($nonDevPackages)->toHaveKey('artisanpack-ui/accessibility');
-    expect($nonDevPackages)->toHaveKey('artisanpack-ui/hooks');
-    expect($nonDevPackages)->toHaveKey('artisanpack-ui/livewire-ui-components');
-    expect($nonDevPackages)->toHaveKey('artisanpack-ui/security');
-});
+    expect( $nonDevPackages )->toHaveKey( 'artisanpack-ui/accessibility' );
+    expect( $nonDevPackages )->toHaveKey( 'artisanpack-ui/hooks' );
+    expect( $nonDevPackages )->toHaveKey( 'artisanpack-ui/livewire-ui-components' );
+    expect( $nonDevPackages )->toHaveKey( 'artisanpack-ui/security' );
+} );
 
-test('version compatibility passes with current PHP version', function () {
-    $command = new InstallPackagesCommand;
-    $minVersion = getProtectedProperty($command, 'minPhpVersion');
+test( 'version compatibility passes with current PHP version', function (): void {
+    $command    = new InstallPackagesCommand;
+    $minVersion = getProtectedProperty( $command, 'minPhpVersion' );
 
-    expect(version_compare(PHP_VERSION, $minVersion, '>='))->toBeTrue();
-});
+    expect( version_compare( PHP_VERSION, $minVersion, '>=' ) )->toBeTrue();
+} );
 
-test('version compatibility passes with current Laravel version', function () {
-    $command = new InstallPackagesCommand;
-    $minVersion = getProtectedProperty($command, 'minLaravelVersion');
+test( 'version compatibility passes with current Laravel version', function (): void {
+    $command    = new InstallPackagesCommand;
+    $minVersion = getProtectedProperty( $command, 'minLaravelVersion' );
 
-    expect(version_compare(app()->version(), $minVersion, '>='))->toBeTrue();
-});
+    expect( version_compare( app()->version(), $minVersion, '>=' ) )->toBeTrue();
+} );
 
-test('get installed packages returns array', function () {
-    $command = new InstallPackagesCommand;
-    $installed = callProtectedMethod($command, 'getInstalledPackages');
+test( 'get installed packages returns array', function (): void {
+    $command   = new InstallPackagesCommand;
+    $installed = callProtectedMethod( $command, 'getInstalledPackages' );
 
-    expect($installed)->toBeArray();
-});
+    expect( $installed )->toBeArray();
+} );
 
-test('get post install commands returns only commands for packages with post install', function () {
+test( 'get post install commands returns only commands for packages with post install', function (): void {
     $command = new InstallPackagesCommand;
 
     // Test with livewire-ui-components (has post-install)
-    $commands = callProtectedMethod($command, 'getPostInstallCommands', [['artisanpack-ui/livewire-ui-components']]);
-    expect($commands)->toHaveKey('livewire-ui-components');
-    expect($commands['livewire-ui-components'])->toBe('artisanpack:generate-theme');
+    $commands = callProtectedMethod( $command, 'getPostInstallCommands', [['artisanpack-ui/livewire-ui-components']] );
+    expect( $commands )->toHaveKey( 'livewire-ui-components' );
+    expect( $commands['livewire-ui-components'] )->toBe( 'artisanpack:generate-theme' );
 
     // Test with hooks (no post-install)
-    $commands = callProtectedMethod($command, 'getPostInstallCommands', [['artisanpack-ui/hooks']]);
-    expect($commands)->toBeEmpty();
+    $commands = callProtectedMethod( $command, 'getPostInstallCommands', [['artisanpack-ui/hooks']] );
+    expect( $commands )->toBeEmpty();
 
     // Test with mixed packages
-    $commands = callProtectedMethod($command, 'getPostInstallCommands', [[
+    $commands = callProtectedMethod( $command, 'getPostInstallCommands', [[
         'artisanpack-ui/hooks',
         'artisanpack-ui/livewire-ui-components',
         'artisanpack-ui/security',
-    ]]);
-    expect($commands)->toHaveCount(1);
-    expect($commands)->toHaveKey('livewire-ui-components');
-});
+    ]] );
+    expect( $commands )->toHaveCount( 1 );
+    expect( $commands )->toHaveKey( 'livewire-ui-components' );
+} );
 
-test('post install commands are not returned for packages not in selection', function () {
+test( 'post install commands are not returned for packages not in selection', function (): void {
     $command = new InstallPackagesCommand;
 
     // Only selecting hooks and security (no post-install commands)
-    $commands = callProtectedMethod($command, 'getPostInstallCommands', [[
+    $commands = callProtectedMethod( $command, 'getPostInstallCommands', [[
         'artisanpack-ui/hooks',
         'artisanpack-ui/security',
-    ]]);
+    ]] );
 
-    expect($commands)->toBeEmpty();
-});
+    expect( $commands )->toBeEmpty();
+} );
 
-test('command description is set', function () {
+test( 'command description is set', function (): void {
     $command = new InstallPackagesCommand;
 
-    expect($command->getDescription())->toBe('Install ArtisanPack UI packages interactively');
-});
+    expect( $command->getDescription() )->toBe( 'Install ArtisanPack UI packages interactively' );
+} );
 
-test('all expected packages are available', function () {
-    $command = new InstallPackagesCommand;
-    $packages = getProtectedProperty($command, 'composerPackages');
+test( 'all expected packages are available', function (): void {
+    $command  = new InstallPackagesCommand;
+    $packages = getProtectedProperty( $command, 'composerPackages' );
 
     $expectedPackages = [
         'artisanpack-ui/accessibility',
@@ -183,9 +183,9 @@ test('all expected packages are available', function () {
         'artisanpack-ui/security',
     ];
 
-    foreach ($expectedPackages as $expected) {
-        expect($packages)->toHaveKey($expected);
+    foreach ( $expectedPackages as $expected ) {
+        expect( $packages )->toHaveKey( $expected );
     }
 
-    expect(count($packages))->toBe(count($expectedPackages));
+    expect( count( $packages ) )->toBe( count( $expectedPackages ) );
 });

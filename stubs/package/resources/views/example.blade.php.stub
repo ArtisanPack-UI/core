@@ -1,0 +1,4 @@
+<div>
+    {{-- {{ PackageName }} example view --}}
+    <p>Hello from {{ '{{ vendor }}/{{ package }}' }}!</p>
+</div>

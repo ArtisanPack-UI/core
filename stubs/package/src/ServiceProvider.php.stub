@@ -1,0 +1,54 @@
+<?php
+
+/**
+ * Service provider for the {{ PackageName }} package.
+ *
+ * @since   1.0.0
+ *
+ * @package {{ Namespace }}
+ */
+
+declare( strict_types=1 );
+
+namespace {{ Namespace }};
+
+use ArtisanPackUI\Core\ArtisanPackServiceProvider;
+
+class {{ PackageName }}ServiceProvider extends ArtisanPackServiceProvider
+{
+    /**
+     * Absolute path to the package configuration file to merge and publish.
+     */
+    protected ?string $configFile = __DIR__ . '/../config/{{ package }}.php';
+
+    /**
+     * Configuration key the package config is merged under.
+     */
+    protected ?string $configKey = 'artisanpack.{{ package }}';
+
+    /**
+     * Publish tag used when publishing the configuration file.
+     */
+    protected ?string $configPublishTag = '{{ package }}-config';
+
+    /**
+     * Container singletons to register, keyed by abstract.
+     *
+     * @var array<int|string, callable|class-string>
+     */
+    protected array $singletons = [
+        '{{ package }}' => {{ PackageName }}::class,
+    ];
+
+    /**
+     * Register any bindings unique to the package.
+     *
+     * Override this method when the package needs container bindings that
+     * don't fit the {@see $singletons} array — interface-to-implementation
+     * contracts, scoped bindings, conditional bindings, and similar.
+     */
+    protected function registerPackageBindings(): void
+    {
+        //
+    }
+}
