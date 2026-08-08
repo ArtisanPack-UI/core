@@ -18,7 +18,11 @@ use ArtisanPackUI\Core\MultiTenancy\SiteContext;
 use Closure;
 
 /**
- * Provides static access to the {@see SiteContext} singleton.
+ * Provides static access to the shared {@see SiteContext}.
+ *
+ * The underlying instance is bound `scoped`, so every call within one request
+ * or queue job reaches the same context — including any site pinned by the
+ * surrounding code — and the next request or job starts from a clean one.
  *
  * @package    ArtisanPack_UI
  * @subpackage Core\Facades

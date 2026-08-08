@@ -46,5 +46,5 @@ test( 'default value constants expose the expected values', function (): void {
 
 test( 'version requirement constants expose the expected values', function (): void {
 	expect( Constants::MIN_PHP_VERSION )->toBe( '8.2.0' )
-		->and( Constants::MIN_LARAVEL_VERSION )->toBe( '10.0.0' );
+		->and( Constants::MIN_LARAVEL_VERSION )->toBe( '12.0.0' );
 } );

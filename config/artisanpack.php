@@ -68,10 +68,13 @@ return [
 		|
 		| "resolvers" lists the strategies, in order; the first one to return an
 		| identifier wins. The default asks artisanpack-ui/cms-framework through
-		| the "ap.cmsFramework.currentSite.resolve" filter, which resolves to null
-		| when the CMS framework is not installed. Add your own class here to
-		| resolve from a subdomain, a header, or anywhere else — it only needs to
-		| implement ArtisanPackUI\Core\Contracts\SiteResolver.
+		| the "ap.cmsFramework.currentSite.resolve" filter, resolving to null
+		| whenever nothing listens on it. If "enabled" is true and
+		| artisanpack-ui/hooks is not installed at all, there is no filter to
+		| answer and the default throws rather than leaving every query
+		| unscoped — remove it from this list in that case. Add your own class
+		| here to resolve from a subdomain, a header, or anywhere else; it only
+		| needs to implement ArtisanPackUI\Core\Contracts\SiteResolver.
 		|
 		*/
 		'multi_tenant' => [

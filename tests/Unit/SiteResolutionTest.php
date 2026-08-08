@@ -82,6 +82,14 @@ describe( 'HookSiteResolver', function (): void {
 		expect( ( new HookSiteResolver )->currentSiteId() )->toBe( 'b8f1c0de' );
 	} );
 
+	it( 'trims a padded string identifier so one site keeps one identity', function (): void {
+		// Returning the untrimmed value would make " b8f1c0de " a different
+		// identifier from "b8f1c0de" everywhere it is used as a key.
+		HookStub::answer( HookSiteResolver::HOOK, '  b8f1c0de  ' );
+
+		expect( ( new HookSiteResolver )->currentSiteId() )->toBe( 'b8f1c0de' );
+	} );
+
 	it( 'fails loudly rather than unscoping when a listener answers with junk', function ( mixed $answer ): void {
 		HookStub::answer( HookSiteResolver::HOOK, $answer );
 

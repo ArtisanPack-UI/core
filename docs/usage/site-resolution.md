@@ -60,8 +60,8 @@ public function __construct( protected SiteContext $siteContext ) {}
 ```
 
 Going through the context rather than the resolver is what keeps packages in
-agreement: the context is a singleton, it applies the `enabled` flag, and it
-honours any site pinned by the surrounding code.
+agreement: one context is shared for the whole request or job, it applies the
+`enabled` flag, and it honours any site pinned by the surrounding code.
 
 Nothing is memoised. The resolver is asked on every call, because the site in
 context can change within a single process.
@@ -127,7 +127,7 @@ run a multi-site install with every query unscoped.
 
 `resolvers` lists the strategies in order; the first to return an identifier
 wins. The list is assembled into a `ChainSiteResolver` and bound as the single
-`SiteResolver` singleton. An empty list binds `NullSiteResolver` instead, so the
+shared `SiteResolver`. An empty list binds `NullSiteResolver` instead, so the
 contract is always resolvable and consumers can type-hint it unconditionally.
 
 A configured class that is missing or does not implement `SiteResolver` raises
@@ -163,8 +163,9 @@ is what keeps `HookSiteResolver` safe as the shipped default for applications
 that have neither package.
 
 A listener may answer with an integer, or with a string identifier — a numeric
-string is coerced to an integer, and any other non-empty string is passed
-through as-is for applications keyed on UUIDs. Anything else raises
+string is coerced to an integer, and any other string is trimmed and passed
+through for applications keyed on UUIDs. Anything else, including a string that
+is empty once trimmed, raises
 `SiteResolutionException`. Coercing an unusable answer to null would silently
 unscope every query the resolution feeds, which leaks one site's records into
 another; failing loudly is the safer direction.

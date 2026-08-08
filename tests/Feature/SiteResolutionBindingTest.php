@@ -103,7 +103,7 @@ it( 'rebuilds resolvers per scope so a request-dependent resolver cannot freeze'
 	expect( app( SiteResolver::class ) )->not->toBe( $first );
 } );
 
-it( 'resolves the site context as a singleton over the bound resolver', function (): void {
+it( 'reuses one site context within a scope, over the bound resolver', function (): void {
 	config()->set( 'artisanpack.core.multi_tenant.enabled', true );
 	config()->set( 'artisanpack.core.multi_tenant.resolvers', [ FixedSiteResolver::class ] );
 

@@ -98,16 +98,24 @@ class HookSiteResolver implements SiteResolver
 			return $resolved;
 		}
 
-		if ( is_string( $resolved ) && '' !== trim( $resolved ) ) {
-			// Note the asymmetry: "12" becomes int 12, but "012" stays a string
-			// because FILTER_VALIDATE_INT rejects leading zeros. A listener that
-			// zero-pads its identifiers therefore hands back a different PHP
-			// type than one that does not, which matters to any consumer using
-			// the identifier as an array key, in a strict comparison, or in a
-			// cache key. Pick one format and keep to it.
-			$asInt = filter_var( $resolved, FILTER_VALIDATE_INT );
+		if ( is_string( $resolved ) ) {
+			// Trim once and use the trimmed value throughout. Returning the
+			// untrimmed string would make " abc " a different identifier from
+			// "abc" in array keys, strict comparisons, cache keys, and query
+			// scopes — one site split into two identities.
+			$trimmed = trim( $resolved );
 
-			return false !== $asInt ? $asInt : $resolved;
+			if ( '' !== $trimmed ) {
+				// Note the asymmetry: "12" becomes int 12, but "012" stays a
+				// string because FILTER_VALIDATE_INT rejects leading zeros. A
+				// listener that zero-pads its identifiers therefore hands back a
+				// different PHP type than one that does not, which matters to
+				// any consumer using the identifier as an array key, in a strict
+				// comparison, or in a cache key. Pick one format and keep to it.
+				$asInt = filter_var( $trimmed, FILTER_VALIDATE_INT );
+
+				return false !== $asInt ? $asInt : $trimmed;
+			}
 		}
 
 		// Coercing an unusable value to null would silently unscope every query
