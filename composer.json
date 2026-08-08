@@ -40,6 +40,9 @@
     "artisanpack-ui/code-style-pint": "^1.1",
     "dealerdirect/phpcodesniffer-composer-installer": "^1.0"
   },
+  "suggest": {
+    "artisanpack-ui/hooks": "Required for HookSiteResolver to resolve the current site through the ap.cmsFramework.currentSite.resolve filter."
+  },
   "scripts": {
     "test": "vendor/bin/pest",
     "test:coverage": "vendor/bin/pest --coverage",
@@ -67,7 +70,8 @@
       "aliases": {
         "Core": "ArtisanPackUI\\Core\\Facades\\Core",
         "ArtisanPackConfig": "ArtisanPackUI\\Core\\Facades\\ArtisanPackConfig",
-        "ArtisanPackLog": "ArtisanPackUI\\Core\\Facades\\ArtisanPackLog"
+        "ArtisanPackLog": "ArtisanPackUI\\Core\\Facades\\ArtisanPackLog",
+        "ArtisanPackSite": "ArtisanPackUI\\Core\\Facades\\ArtisanPackSite"
       }
     }
   }

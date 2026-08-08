@@ -51,6 +51,36 @@ return [
 			],
 		],
 
+		/*
+		|--------------------------------------------------------------------------
+		| Shared Site Resolution
+		|--------------------------------------------------------------------------
+		|
+		| This is the one place the ArtisanPack UI ecosystem decides which site
+		| the current code is running for. Every package that scopes records per
+		| site reads this block, so a single request cannot resolve to one site
+		| for analytics and a different one for bookings.
+		|
+		| "enabled" switches automatic resolution on. Left false, no site is ever
+		| put in context and every package leaves its queries unscoped, which is
+		| what a single-tenant application wants. Code that pins a site
+		| deliberately — ArtisanPackSite::forSite() — is unaffected by this flag.
+		|
+		| "resolvers" lists the strategies, in order; the first one to return an
+		| identifier wins. The default asks artisanpack-ui/cms-framework through
+		| the "ap.cmsFramework.currentSite.resolve" filter, which resolves to null
+		| when the CMS framework is not installed. Add your own class here to
+		| resolve from a subdomain, a header, or anywhere else — it only needs to
+		| implement ArtisanPackUI\Core\Contracts\SiteResolver.
+		|
+		*/
+		'multi_tenant' => [
+			'enabled'   => env( 'ARTISANPACK_MULTI_TENANT_ENABLED', false ),
+			'resolvers' => [
+				ArtisanPackUI\Core\MultiTenancy\HookSiteResolver::class,
+			],
+		],
+
 	],
 
 	// Add your package-specific overrides here.
