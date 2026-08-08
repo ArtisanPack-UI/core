@@ -123,3 +123,23 @@ if ( ! function_exists( 'getToastDuration' ) ) {
 		return config( 'artisanpack.core.toast_duration', 5 );
 	}
 }
+
+if ( ! function_exists( 'apCurrentSiteId' ) ) {
+	/**
+	 * Gets the identifier of the site the current code is running for.
+	 *
+	 * Thin wrapper around the shared
+	 * ArtisanPackUI\Core\MultiTenancy\SiteContext singleton, which is the one
+	 * place a site becomes known across the ArtisanPack UI ecosystem. Returns
+	 * null when no site is in context, which consumers read as "do not scope".
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return int|string|null The current site identifier, or null when no site
+	 *                         is in context.
+	 */
+	function apCurrentSiteId(): int|string|null
+	{
+		return app( ArtisanPackUI\Core\MultiTenancy\SiteContext::class )->currentSiteId();
+	}
+}

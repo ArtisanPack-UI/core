@@ -99,7 +99,7 @@ Possible causes:
 
 - The installed package's lockfile lists a version Composer cannot parse via `composer/semver`. Confirm `composer install` ran cleanly and `composer.lock` is well-formed.
 - The constraint uses a syntax not supported by `composer/semver`. Open an issue against the sibling package — it should widen the constraint.
-- You're running on Laravel 13 but the sibling package hasn't widened to `^11.0|^12.0|^13.0` yet. Open an issue or PR against the sibling.
+- You're running on Laravel 13 but the sibling package hasn't widened to `^12.0|^13.0` yet. Open an issue or PR against the sibling.
 
 ## Audit events not being persisted
 

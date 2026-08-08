@@ -54,7 +54,7 @@ class EnvironmentCheck implements DiagnosticCheck
      *
      * @var string
      */
-    public const MIN_LARAVEL_VERSION = '10.0.0';
+    public const MIN_LARAVEL_VERSION = '12.0.0';
 
     /**
      * PHP extensions required by Laravel core that ArtisanPack UI also relies on.

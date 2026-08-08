@@ -133,7 +133,7 @@ php artisan artisanpack:scaffold-config
 ## Requirements
 
 - PHP ^8.2
-- Laravel 11.x, 12.x, or 13.x (illuminate/support)
+- Laravel 12.x or 13.x (illuminate/support)
 
 ### Supported Versions
 
@@ -142,10 +142,11 @@ php artisan artisanpack:scaffold-config
 | 1.0.x           | 8.2+ | 10.x, 11.x, 12.x           |
 | 1.1.x           | 8.2+ | 11.x, 12.x                 |
 | 1.2.x           | 8.2+ | 11.x, 12.x, 13.x           |
+| 1.3.x           | 8.2+ | 12.x, 13.x                 |
 
-> **Note:** Laravel 13 requires PHP 8.3+. PHP 8.2 users continue to receive Laravel 11/12; Laravel 13 is only selectable on PHP 8.3+, as enforced by Laravel's own PHP constraint.
+> **Note:** Laravel 13 requires PHP 8.3+. PHP 8.2 users continue to receive Laravel 12; Laravel 13 is only selectable on PHP 8.3+, as enforced by Laravel's own PHP constraint.
 
-> **Note:** Version 1.1 dropped support for Laravel 10.x and earlier. See [UPGRADE.md](UPGRADE.md) for migration instructions if upgrading from 1.0.x.
+> **Note:** Version 1.3 dropped support for Laravel 11.x, and version 1.1 dropped Laravel 10.x. See [UPGRADE.md](UPGRADE.md) for migration instructions.
 
 ## Contributing
 

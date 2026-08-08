@@ -1,5 +1,26 @@
 # ArtisanPack UI Core Changelog
 
+## [Unreleased]
+
+### Breaking Changes
+
+* **Dropped Laravel 11 support**: The `illuminate/support` constraint narrows from `^11.0|^12.0|^13.0` to `^12.0|^13.0`, and the `orchestra/testbench` dev constraint from `^9.0|^10.0|^11.0` to `^10.0|^11.0`. Every Laravel 11 release (v11.0.0 through v11.55.0) carries unpatched security advisories and 11.x is past its security-fix window, so Composer's advisory policy refuses to install any of them — Core can no longer install or test against Laravel 11 at all, which had been failing every Laravel 11 CI leg. Laravel 12 and 13 are unaffected. PHP 8.2 remains the minimum and now receives Laravel 12. Stay on Core 1.2.x if you must remain on Laravel 11, understanding that the framework itself is unpatched. See `UPGRADE.md`.
+* **`MIN_LARAVEL_VERSION` corrected to `12.0.0`**: `Constants::MIN_LARAVEL_VERSION` and `Diagnostics\Checks\EnvironmentCheck::MIN_LARAVEL_VERSION` both still read `10.0.0`, stale since 1.1 dropped Laravel 10, so `artisanpack:diagnose` reported unsupported framework versions as passing. Update any assertion on either constant.
+
+### Added
+
+* **Shared site resolution**: Added `ArtisanPackUI\Core\Contracts\SiteResolver` — the ecosystem's single answer to "which site is this code running for?". Every package that scopes records per site (analytics, bookings, and anything added later) now reads one contract, one container binding, and one configuration block, so a single request can no longer resolve to site 2 for one package while resolving to site 1 for another. The contract is keyed on the site identifier (`int|string|null`) rather than any package's `Site` model, and takes no `Request`, so it works unchanged inside console commands and queue workers.
+* **`SiteContext` service**: Added `ArtisanPackUI\Core\MultiTenancy\SiteContext`, the surface consumers actually talk to, shared across each request or queue job. Delegates to the bound resolver, applies the `enabled` flag, and adds `forSite()`, `withoutSite()`, `setSiteId()`, `forget()`, and `flush()` for pinning a site over a bounded stretch of work — restoring the previous context afterwards, including when the callback throws, and nesting safely. A pinned site wins over the resolver and applies even while automatic resolution is switched off, because pinning is an explicit instruction from the calling code. Scoped binding already clears a pin at the request or job boundary, so no Octane wiring is required; `flush()` is there for resetting deliberately mid-process. Reachable through the new `ArtisanPackUI\Core\Facades\ArtisanPackSite` facade (aliased as `ArtisanPackSite`) and the new `apCurrentSiteId()` helper.
+* **Shipped resolvers**: `HookSiteResolver` (the default — applies the `ap.cmsFramework.currentSite.resolve` filter, resolving to null where nothing answers, and raising `SiteResolutionException` where `artisanpack-ui/hooks` is not installed at all and there is therefore no filter to answer), `NullSiteResolver` (never puts a site in context), and `ChainSiteResolver` (asks each configured resolver in turn and takes the first non-null answer). Nothing memoises: the resolver is asked on every call, because a worker looping over sites changes the answer within one process.
+* **`artisanpack.core.multi_tenant` configuration**: One authoritative block — `enabled` (default false, so an unconfigured application stays single-tenant and every package leaves its queries unscoped) and `resolvers` (an ordered list of `SiteResolver` class names, assembled into the bound chain). A configured class that is missing or does not implement the contract raises the new `SiteResolutionException` at bind time rather than being silently dropped, as does a `resolvers` value that is not a list at all; a hook listener answering with an unusable value fails the same way. Coercing any of them to null would quietly unscope every query the resolution feeds. Only an explicit empty list switches resolution off.
+
+### Notes
+
+* Nothing was removed and no existing behaviour changed; the site-resolution services are additive and inert until `artisanpack.core.multi_tenant.enabled` is switched on.
+* `SiteResolver` and `SiteContext` are bound with `scoped()` rather than `singleton()`. Laravel forgets scoped instances between Octane requests and between queue jobs, which is what stops a pinned site outliving the job that pinned it, and what stops a request-dependent resolver freezing its first request's dependencies for the life of a worker. Both would otherwise scope later work to the wrong site silently.
+* The `multi_tenant` defaults are merged by the service provider, so `ARTISANPACK_MULTI_TENANT_ENABLED` takes effect whether or not the application has published `config/artisanpack.php`. Core publishes rather than merges the rest of that stub, so without this an operator could switch tenancy on and have it silently ignored.
+* `artisanpack-ui/hooks` is a suggestion rather than a requirement, and is only needed if `HookSiteResolver` stays in the resolver list while tenancy is switched on.
+
 ## [1.2.0] - 2026-05-23
 
 ### Added
