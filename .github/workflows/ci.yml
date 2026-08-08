@@ -58,9 +58,11 @@ jobs:
     name: Test (L${{ matrix.laravel }} / PHP ${{ matrix.php }})
 
     strategy:
-      fail-fast: true
+      # One failing leg used to cancel the other eight, so a single broken
+      # combination read as a wholly broken matrix. Let every leg report.
+      fail-fast: false
       matrix:
-        laravel: ['11', '12', '13']
+        laravel: ['12', '13']
         php: ['8.2', '8.3', '8.4']
         exclude:
           # Laravel 13 requires PHP 8.3+

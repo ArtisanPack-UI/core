@@ -71,7 +71,11 @@ You can, but you don't have to anymore. `ArtisanPackServiceProvider` handles con
 
 ## Does Core support Laravel 13?
 
-Yes, since Core 1.2. The composer constraint is `^11.0|^12.0|^13.0`. Laravel 13 requires PHP 8.3+, so PHP 8.2 users continue to receive Laravel 11 / 12 ( Laravel enforces its own PHP constraint ).
+Yes, since Core 1.2. The composer constraint is `^12.0|^13.0` as of Core 1.3. Laravel 13 requires PHP 8.3+, so PHP 8.2 users continue to receive Laravel 12 ( Laravel enforces its own PHP constraint ).
+
+## Is Laravel 11 still supported?
+
+No, Core 1.3 dropped it. Every Laravel 11 release carries unpatched security advisories and the branch is past its security-fix window, so Composer refuses to install it at all — Core cannot support a framework version that no longer resolves. Stay on Core 1.2.x if you must remain on Laravel 11, understanding the framework itself is unpatched.
 
 ## Is Laravel 10 still supported?
 

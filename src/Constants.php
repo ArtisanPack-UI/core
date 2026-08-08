@@ -230,5 +230,5 @@ final class Constants
 	 *
 	 * @var string
 	 */
-	public const MIN_LARAVEL_VERSION = '10.0.0';
+	public const MIN_LARAVEL_VERSION = '12.0.0';
 }

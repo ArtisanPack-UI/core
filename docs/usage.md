@@ -12,6 +12,7 @@ ArtisanPack UI Core exposes its functionality through five layers — a shared b
 - [Configuration manager](usage/configuration-manager.md) — `ConfigurationManager`, `ConfigurationSchema`, `ValidationResult`, helpers, facade
 - [Logging](usage/logging.md) — `LoggerFactory`, `Logger`, `ArtisanPackLogger`, audit entries, the `AuditLogCreated` event, `ArtisanPackLog` facade
 - [Blade directives](usage/blade-directives.md) — `BladeDirectiveRegistrar`, intent-revealing directive registration patterns
+- [Site resolution](usage/site-resolution.md) — `SiteResolver`, `SiteContext`, the shipped resolvers, the `artisanpack.core.multi_tenant` block
 - [Diagnostics](usage/diagnostics.md) — `DiagnosticRunner`, the five default checks, custom checks, `php artisan artisanpack:diagnose`
 - [Compatibility analysis](usage/compatibility.md) — `CompatibilityChecker`, `php artisan artisanpack:check-compatibility`
 - [Updates](usage/updates.md) — `UpdateChecker`, `PackagistClient`, `php artisan artisanpack:check-updates`

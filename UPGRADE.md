@@ -1,5 +1,34 @@
 # Upgrade Guide
 
+## Upgrading from 1.2 to 1.3
+
+Version 1.3.0 **drops support for Laravel 11**. Laravel 12 and 13 are unaffected, and no other public API was removed.
+
+### Requirements Changes
+
+#### Laravel Version
+
+The `illuminate/support` constraint narrows from `^11.0|^12.0|^13.0` to `^12.0|^13.0`. The `orchestra/testbench` dev constraint narrows from `^9.0|^10.0|^11.0` to `^10.0|^11.0` to match.
+
+This is not a preference. Every Laravel 11 release — v11.0.0 through v11.55.0 — carries unpatched security advisories, and 11.x is past its security-fix window, so there is no patched release to move to. Composer's advisory policy refuses to install any of them, which means Core can no longer install or test against Laravel 11 at all. Continuing to advertise support for a version that does not resolve would be a claim we cannot honour.
+
+**What to do:**
+
+1. Upgrade your application to Laravel 12 or 13 — the only path that leaves you on a patched framework, **or**
+2. Stay on Core 1.2.x, understanding that your framework is unpatched and that this is a holding position rather than a destination.
+
+#### Minimum Laravel version constant
+
+`Constants::MIN_LARAVEL_VERSION` and `Diagnostics\Checks\EnvironmentCheck::MIN_LARAVEL_VERSION` change from `'10.0.0'` to `'12.0.0'`. Both were already stale — 1.1 dropped Laravel 10 without updating them — so `artisanpack:diagnose` previously reported an unsupported framework version as passing. If you assert on either constant, update your expectation.
+
+### PHP Version
+
+Unchanged. PHP 8.2 remains the minimum, and PHP 8.2 users now receive Laravel 12. Laravel 13 still requires PHP 8.3+.
+
+### New in 1.3
+
+Shared site resolution — `Contracts\SiteResolver`, `MultiTenancy\SiteContext`, and the `artisanpack.core.multi_tenant` config block. Entirely additive and inert until `enabled` is switched on. See [Site resolution](docs/usage/site-resolution.md).
+
 ## Upgrading from 1.1 to 1.2
 
 Version 1.2.0 adds support for Laravel 13 while continuing to support Laravel 11 and 12. **This change is additive — no action is required for existing users.**
