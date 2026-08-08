@@ -36,6 +36,14 @@ function artisanpack_supports_laravel_13(): bool;
 
 Returns `true` when the current Laravel runtime is 13.0 or newer. Use this when guarding behaviour that depends on Laravel 13-only APIs. Prefer feature detection (`method_exists()`) for individual APIs; reach for this helper only when the gate is broader than a single method.
 
+### `apCurrentSiteId()`
+
+```php
+function apCurrentSiteId(): int|string|null;
+```
+
+Returns the identifier of the site the current code is running for, by delegating to the shared `SiteContext`. Returns `null` when no site is in context, which consumers read as "do not scope". See [Site resolution](../usage/site-resolution.md).
+
 ### `getToastDuration()`
 
 ```php
@@ -82,6 +90,22 @@ ArtisanPackLog::make( string $package ): ArtisanPackLogger;
 ArtisanPackLog::has( string $package ): bool;
 ArtisanPackLog::forget( ?string $package = null ): void;
 ArtisanPackLog::all(): array<string, ArtisanPackLogger>;
+```
+
+### `ArtisanPackUI\Core\Facades\ArtisanPackSite`
+
+Facade for `SiteContext`:
+
+```php
+ArtisanPackSite::currentSiteId(): int|string|null;
+ArtisanPackSite::hasSite(): bool;
+ArtisanPackSite::enabled(): bool;
+ArtisanPackSite::resolver(): SiteResolver;
+ArtisanPackSite::setSiteId( int|string|null $siteId ): SiteContext;
+ArtisanPackSite::forget(): SiteContext;
+ArtisanPackSite::forSite( int|string|null $siteId, Closure $callback ): mixed;
+ArtisanPackSite::withoutSite( Closure $callback ): mixed;
+ArtisanPackSite::flush(): SiteContext;
 ```
 
 ### `ArtisanPackUI\Core\Facades\ArtisanPackFacade`
@@ -331,6 +355,45 @@ public function check( array $filters = [] ): array<string, mixed>;
 
 `$filters` accepts `minor_only: bool` and `security_only: bool` keys.
 
+## Site resolution
+
+Additive and inert until `artisanpack.core.multi_tenant.enabled` is switched on. See [Site resolution](../usage/site-resolution.md).
+
+### `ArtisanPackUI\Core\Contracts\SiteResolver` (interface)
+
+```php
+public function currentSiteId(): int|string|null;
+```
+
+The ecosystem's single answer to "which site is this code running for?". Keyed on the site identifier rather than any package's `Site` model, and takes no `Request`, so it works unchanged inside console commands and queue workers. Returns `null` when no site resolves, which consumers read as "do not scope".
+
+### `ArtisanPackUI\Core\MultiTenancy\SiteContext`
+
+```php
+public function __construct( SiteResolver $resolver, bool $enabled = false );
+public function currentSiteId(): int|string|null;
+public function hasSite(): bool;
+public function enabled(): bool;
+public function resolver(): SiteResolver;
+public function setSiteId( int|string|null $siteId ): static;
+public function forget(): static;
+public function forSite( int|string|null $siteId, Closure $callback ): mixed;
+public function withoutSite( Closure $callback ): mixed;
+public function flush(): static;
+```
+
+The surface consumers actually talk to. Delegates to the bound resolver, applies the `enabled` flag, and adds pinning over a bounded stretch of work — `forSite()` and `withoutSite()` restore the previous context afterwards, including when the callback throws, and nest safely. A pinned site wins over the resolver and applies even while automatic resolution is switched off.
+
+### Shipped resolvers
+
+| Class | Behaviour |
+|---|---|
+| `ArtisanPackUI\Core\MultiTenancy\HookSiteResolver` | The default. Applies the `ap.cmsFramework.currentSite.resolve` filter, resolving to `null` where nothing answers, and raising `SiteResolutionException` where `artisanpack-ui/hooks` is not installed at all. |
+| `ArtisanPackUI\Core\MultiTenancy\NullSiteResolver` | Never puts a site in context. |
+| `ArtisanPackUI\Core\MultiTenancy\ChainSiteResolver` | Asks each configured resolver in turn and takes the first non-`null` answer. `fromConfig( array $resolverClasses, Container $container ): static` builds a chain from the configured class names, resolving each through the container; `resolvers(): array` returns the assembled chain. |
+
+Nothing memoises: the resolver is asked on every call, because a worker looping over sites changes the answer within one process.
+
 ## Enums
 
 | Enum | Cases |
@@ -351,6 +414,7 @@ All inherit from `ArtisanPackUI\Core\Exceptions\ArtisanPackException` (which ext
 | `DependencyException` | Required package dependency is missing or incompatible |
 | `InstallationException` | Package failed to install or publish required assets |
 | `ServiceException` | Unrecoverable runtime error in a package service |
+| `SiteResolutionException` | A configured site resolver is missing, does not implement `SiteResolver`, the `resolvers` value is not a list, a hook listener answered with an unusable value, or `HookSiteResolver` ran without `artisanpack-ui/hooks` installed |
 | `ValidationException` | Data failed a package's validation rules |
 
 ## Artisan commands
@@ -391,5 +455,12 @@ The following container bindings are registered by `CoreServiceProvider` as sing
 | `\ArtisanPackUI\Core\Compatibility\CompatibilityChecker` | self |
 | `\ArtisanPackUI\Core\Updates\PackagistClient` | self |
 | `\ArtisanPackUI\Core\Updates\UpdateChecker` | self |
+
+Site resolution is bound with `scoped()` rather than `singleton()`. Laravel forgets scoped instances between Octane requests and between queue jobs, which is what stops a pinned site outliving the job that pinned it, and what stops a request-dependent resolver freezing its first request's dependencies for the life of a worker:
+
+| Abstract | Concrete |
+|---|---|
+| `\ArtisanPackUI\Core\Contracts\SiteResolver` | `ChainSiteResolver` assembled from `artisanpack.core.multi_tenant.resolvers` |
+| `\ArtisanPackUI\Core\MultiTenancy\SiteContext` | self |
 
 The `'a11y'` alias is owned by the `artisanpack-ui/accessibility` package and bound to `\ArtisanPack\Accessibility\Accessibility` when that package is installed.

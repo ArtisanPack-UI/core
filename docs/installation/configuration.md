@@ -39,6 +39,14 @@ return [
             ],
         ],
 
+        // Shared site resolution (consumed by every package that scopes per site).
+        'multi_tenant' => [
+            'enabled'   => env( 'ARTISANPACK_MULTI_TENANT_ENABLED', false ),
+            'resolvers' => [
+                ArtisanPackUI\Core\MultiTenancy\HookSiteResolver::class,
+            ],
+        ],
+
     ],
 
     // Other ArtisanPack UI packages merge their keys here, e.g. 'media-library',
@@ -62,6 +70,24 @@ The default value reads from the `ARTISANPACK_LOG_CHANNEL` environment variable.
 Type: `bool`. Default: `true`.
 
 Whether `$log->audit()` calls actually persist an entry and dispatch an `AuditLogCreated` event. Set to `false` to silently drop audit calls in environments that should not record them ( e.g. local development that does not want production-style audit log noise ).
+
+## Multi-tenancy keys
+
+The single authoritative block for site resolution, so a single request cannot resolve to site 2 for one package while resolving to site 1 for another. Unlike the rest of this file these defaults are *merged* by `CoreServiceProvider`, so they apply whether or not the application has published the config. See [Site resolution](../usage/site-resolution.md).
+
+### `core.multi_tenant.enabled`
+
+Type: `bool`. Default: `false`.
+
+Whether site resolution is switched on. Left at the default, an unconfigured application stays single-tenant and every package leaves its queries unscoped. Reads from the `ARTISANPACK_MULTI_TENANT_ENABLED` environment variable.
+
+### `core.multi_tenant.resolvers`
+
+Type: `array<int, class-string>`. Default: `[ HookSiteResolver::class ]`.
+
+An ordered list of `SiteResolver` class names, assembled into a `ChainSiteResolver` that asks each in turn and takes the first non-`null` answer.
+
+A configured class that is missing or does not implement the contract raises `SiteResolutionException` at bind time rather than being silently dropped, as does a value that is not a list at all — coercing any of them to `null` would quietly unscope every query the resolution feeds. Only an explicit empty list switches resolution off.
 
 ## Updates keys
 

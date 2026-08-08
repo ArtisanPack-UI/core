@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-08-08
+
 ### Breaking Changes
 
 * **Dropped Laravel 11 support**: The `illuminate/support` constraint narrows from `^11.0|^12.0|^13.0` to `^12.0|^13.0`, and the `orchestra/testbench` dev constraint from `^9.0|^10.0|^11.0` to `^10.0|^11.0`. Every Laravel 11 release (v11.0.0 through v11.55.0) carries unpatched security advisories and 11.x is past its security-fix window, so Composer's advisory policy refuses to install any of them — Core can no longer install or test against Laravel 11 at all, which had been failing every Laravel 11 CI leg. Laravel 12 and 13 are unaffected. PHP 8.2 remains the minimum and now receives Laravel 12. Stay on Core 1.2.x if you must remain on Laravel 11, understanding that the framework itself is unpatched. See `UPGRADE.md`.
