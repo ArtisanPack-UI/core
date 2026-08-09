@@ -99,6 +99,7 @@ Facade for `SiteContext`:
 ```php
 ArtisanPackSite::currentSiteId(): int|string|null;
 ArtisanPackSite::hasSite(): bool;
+ArtisanPackSite::isPinned(): bool;
 ArtisanPackSite::enabled(): bool;
 ArtisanPackSite::resolver(): SiteResolver;
 ArtisanPackSite::setSiteId( int|string|null $siteId ): SiteContext;
@@ -370,9 +371,10 @@ The ecosystem's single answer to "which site is this code running for?". Keyed o
 ### `ArtisanPackUI\Core\MultiTenancy\SiteContext`
 
 ```php
-public function __construct( SiteResolver $resolver, bool $enabled = false );
+public function __construct( SiteResolver $resolver, Repository $config );
 public function currentSiteId(): int|string|null;
 public function hasSite(): bool;
+public function isPinned(): bool;
 public function enabled(): bool;
 public function resolver(): SiteResolver;
 public function setSiteId( int|string|null $siteId ): static;
@@ -383,6 +385,8 @@ public function flush(): static;
 ```
 
 The surface consumers actually talk to. Delegates to the bound resolver, applies the `enabled` flag, and adds pinning over a bounded stretch of work — `forSite()` and `withoutSite()` restore the previous context afterwards, including when the callback throws, and nest safely. A pinned site wins over the resolver and applies even while automatic resolution is switched off.
+
+`isPinned()` (1.3.1) reports whether a site was put in context explicitly. `currentSiteId()` answers `null` both when nothing is pinned and when calling code pinned "no site" deliberately, so a consumer that applies a default site of its own needs this to tell the two apart — otherwise it substitutes its default for an instruction to stay unscoped.
 
 ### Shipped resolvers
 

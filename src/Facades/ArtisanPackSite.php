@@ -29,6 +29,7 @@ use Closure;
  *
  * @method static int|string|null currentSiteId()
  * @method static bool hasSite()
+ * @method static bool isPinned()
  * @method static bool enabled()
  * @method static SiteResolver resolver()
  * @method static SiteContext setSiteId( int|string|null $siteId )

@@ -93,6 +93,25 @@ calling code.
 behind by an early return or a swallowed exception is a cross-site read waiting
 to happen, and `forSite()` cannot leave one.
 
+### Telling "no site" apart from "no pin"
+
+`currentSiteId()` answers `null` in two different situations: nothing is pinned
+and the resolver found nothing, or something pinned "no site" on purpose through
+`withoutSite()` or `setSiteId( null )`. Most consumers can treat both the same
+way and leave their queries unscoped.
+
+A package that falls back to a default site of its own cannot. `null` meaning
+"nothing in context" is its cue to apply that default, while `null` meaning "no
+site, deliberately" is an instruction from another package to stay unscoped —
+and applying the default there scopes work that was meant to span every site.
+`isPinned()` (since 1.3.1) separates them:
+
+```php
+if ( ArtisanPackSite::currentSiteId() === null && ! ArtisanPackSite::isPinned() ) {
+    // Nothing in context and nobody asked for that, so a default is safe here.
+}
+```
+
 `SiteContext` and the resolver are bound with `scoped()`, not `singleton()`, so
 Laravel forgets them between Octane requests and between queue jobs. A pin that
 outlives its work therefore dies at the request or job boundary rather than

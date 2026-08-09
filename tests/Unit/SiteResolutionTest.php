@@ -229,6 +229,32 @@ describe( 'SiteContext', function (): void {
 			->and( $context->forget()->currentSiteId() )->toBe( 7 );
 	} );
 
+	it( 'reports nothing pinned before anything pins a site', function (): void {
+		expect( makeSiteContext( new FixedSiteResolver )->isPinned() )->toBeFalse();
+	} );
+
+	it( 'reports a pin even when the pinned site is no site at all', function (): void {
+		$context = makeSiteContext( new FixedSiteResolver );
+
+		expect( $context->setSiteId( null )->isPinned() )->toBeTrue()
+			->and( $context->currentSiteId() )->toBeNull();
+	} );
+
+	it( 'stops reporting a pin once it is released', function (): void {
+		$context = makeSiteContext( new FixedSiteResolver );
+
+		expect( $context->setSiteId( 42 )->forget()->isPinned() )->toBeFalse()
+			->and( $context->setSiteId( 42 )->flush()->isPinned() )->toBeFalse();
+	} );
+
+	it( 'reports a pin only for the duration of a bounded callback', function (): void {
+		$context = makeSiteContext( new FixedSiteResolver );
+
+		expect( $context->withoutSite( fn () => $context->isPinned() ) )->toBeTrue()
+			->and( $context->forSite( 11, fn () => $context->isPinned() ) )->toBeTrue()
+			->and( $context->isPinned() )->toBeFalse();
+	} );
+
 	it( 'restores the previous context after running for a site', function (): void {
 		$context = makeSiteContext( new FixedSiteResolver );
 
