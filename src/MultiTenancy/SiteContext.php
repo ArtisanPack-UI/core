@@ -121,6 +121,24 @@ class SiteContext
 	}
 
 	/**
+	 * Determines whether a site has been pinned explicitly.
+	 *
+	 * Consumers that apply a default site of their own need this to tell
+	 * "nothing is pinned, so fall back to my default" apart from "another
+	 * package pinned no site deliberately, so stay unscoped" — both of which
+	 * `currentSiteId()` reports as null.
+	 *
+	 * @since 1.3.1
+	 *
+	 * @return bool True when `setSiteId()`, `forSite()`, or `withoutSite()` put
+	 *              a site — including no site at all — in context explicitly.
+	 */
+	public function isPinned(): bool
+	{
+		return $this->pinned;
+	}
+
+	/**
 	 * Determines whether automatic site resolution is switched on.
 	 *
 	 * @since 1.3.0

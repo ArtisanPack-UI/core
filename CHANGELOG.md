@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [1.3.1] - 2026-08-09
+
+### Added
+
+* **`SiteContext::isPinned()`**: New accessor reporting whether a site was put in context explicitly through `setSiteId()`, `forSite()`, or `withoutSite()`. `currentSiteId()` answers null both when nothing is pinned and when another package deliberately pinned "no site", so a consumer that applies a default site of its own had no way to tell the two apart and would override an explicit no-site instruction with its default. Reachable through the `ArtisanPackSite` facade. Purely additive; nothing else changed.
+
 ## [1.3.0] - 2026-08-08
 
 ### Breaking Changes
