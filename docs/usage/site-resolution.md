@@ -96,9 +96,10 @@ to happen, and `forSite()` cannot leave one.
 ### Telling "no site" apart from "no pin"
 
 `currentSiteId()` answers `null` in two different situations: nothing is pinned
-and the resolver found nothing, or something pinned "no site" on purpose through
-`withoutSite()` or `setSiteId( null )`. Most consumers can treat both the same
-way and leave their queries unscoped.
+and the resolver found nothing, or something pinned "no site" on purpose —
+`withoutSite()`, `setSiteId( null )`, or `forSite( null, … )`, which all set the
+same pinned state. Most consumers can treat both situations the same way and
+leave their queries unscoped.
 
 A package that falls back to a default site of its own cannot. `null` meaning
 "nothing in context" is its cue to apply that default, while `null` meaning "no
